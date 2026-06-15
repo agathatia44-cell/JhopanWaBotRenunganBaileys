@@ -350,7 +350,26 @@ function scheduleReconnect() {
  * Kirim QR Code ke semua admin via Telegram
  */
 async function sendQRToAdmins(qr) {
-  if (!telegramBot || adminChatIds.size === 0) return;
+  if (!telegramBot) {
+    console.log("⚠️ Telegram bot not ready, QR cannot be sent");
+    return;
+  }
+
+  // Fallback: gunakan ADMIN_TELEGRAM_IDS jika adminChatIds belum terisi
+  let targets = [...adminChatIds.entries()];
+
+  if (targets.length === 0 && process.env.ADMIN_TELEGRAM_IDS) {
+    const adminIds = process.env.ADMIN_TELEGRAM_IDS.split(",").map((s) =>
+      s.trim()
+    );
+    targets = adminIds.map((id) => [id, id]); // [userId, chatId]
+    console.log(`📱 Using ADMIN_TELEGRAM_IDS fallback: ${adminIds.join(", ")}`);
+  }
+
+  if (targets.length === 0) {
+    console.log("⚠️ No admin targets for QR code");
+    return;
+  }
 
   try {
     const qrImagePath = "./qr-code.png";
@@ -362,9 +381,9 @@ async function sendQRToAdmins(qr) {
       `2️⃣ Tap Menu (⋮) → Perangkat Tertaut\n` +
       `3️⃣ Tap "Tautkan Perangkat"\n` +
       `4️⃣ Scan QR Code ini\n\n` +
-      `⏳ QR berlaku 60 detik...`;
+      `⏳ QR berlaku ~60 detik, scan sekarang!`;
 
-    for (const [userId, chatId] of adminChatIds.entries()) {
+    for (const [userId, chatId] of targets) {
       try {
         await telegramBot.sendPhoto(chatId, qrImagePath, {
           caption,

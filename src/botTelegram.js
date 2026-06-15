@@ -1602,6 +1602,22 @@ function setupWebhook() {
     });
   });
 
+  // Root endpoint - 200 OK (for Render health check & cron-job.org ping)
+  expressApp.get("/", (req, res) => {
+    res.status(200).json({
+      name: "JhopanWa Bot Renungan",
+      status: "running",
+      mode: "webhook",
+      platform: "render",
+      uptime: Math.floor(process.uptime()),
+    });
+  });
+
+  // HEAD / - Render also does HEAD requests for health checks
+  expressApp.head("/", (req, res) => {
+    res.sendStatus(200);
+  });
+
   // Webhook endpoint
   expressApp.post(webhookPath, (req, res) => {
     try {
