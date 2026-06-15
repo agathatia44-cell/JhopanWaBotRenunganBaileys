@@ -1,0 +1,9 @@
+{
+  "renunganGroupId": "",
+  "birthdayGroupId": "",
+  "renunganTime": "08:00",
+  "birthdayTime": "07:00",
+  "birthdayDelayMinutes": 5,
+  "enabled": true,
+  "birthdayEnabled": true
+}

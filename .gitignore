@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
+.env
+
+# WhatsApp session (Baileys)
+baileys_auth_info/
+
+# WhatsApp session (old - whatsapp-web.js, can be removed)
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Baileys reference (cloned for development only)
+Baileys/
+
+# Google credentials
+credentials.json
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# QR code image
+qr-code.png
+
+# Setup state
+.setup-state
+
+# Python virtual environment
+.venv/
+
+# Temporary files
+*.tmp
+*.bak

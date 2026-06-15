@@ -1,0 +1,2591 @@
+{
+  "year": 2029,
+  "verses": [
+    {
+      "id": 1,
+      "verse": "Lukas 1:1-4",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 1
+    },
+    {
+      "id": 2,
+      "verse": "2 Tesalonika 1:3",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 2
+    },
+    {
+      "id": 3,
+      "verse": "Matius 17:20",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 3
+    },
+    {
+      "id": 4,
+      "verse": "1 Yohanes 5:4",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 4
+    },
+    {
+      "id": 5,
+      "verse": "Kolose 3:12-13",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 5
+    },
+    {
+      "id": 6,
+      "verse": "Ibrani 4:12",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 6
+    },
+    {
+      "id": 7,
+      "verse": "Amsal 27:17",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 7
+    },
+    {
+      "id": 8,
+      "verse": "Roma 6:4",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 8
+    },
+    {
+      "id": 9,
+      "verse": "Daniel 9:19",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 9
+    },
+    {
+      "id": 10,
+      "verse": "Lukas 11:1",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 10
+    },
+    {
+      "id": 11,
+      "verse": "Efesus 2:8-9",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 11
+    },
+    {
+      "id": 12,
+      "verse": "Roma 8:24-25",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 12
+    },
+    {
+      "id": 13,
+      "verse": "Yesaya 53:5",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 13
+    },
+    {
+      "id": 14,
+      "verse": "Mazmur 147:3",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 14
+    },
+    {
+      "id": 15,
+      "verse": "Markus 1:15",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 15
+    },
+    {
+      "id": 16,
+      "verse": "Kolose 3:16",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 16
+    },
+    {
+      "id": 17,
+      "verse": "Yesaya 57:18",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 17
+    },
+    {
+      "id": 18,
+      "verse": "Kolose 1:9",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 18
+    },
+    {
+      "id": 19,
+      "verse": "Yohanes 15:2",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 19
+    },
+    {
+      "id": 20,
+      "verse": "Yohanes 15:9",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 20
+    },
+    {
+      "id": 21,
+      "verse": "Yesaya 9:6",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 21
+    },
+    {
+      "id": 22,
+      "verse": "Hosea 14:9",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 22
+    },
+    {
+      "id": 23,
+      "verse": "1 Yohanes 4:8",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 23
+    },
+    {
+      "id": 24,
+      "verse": "Roma 15:13",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 24
+    },
+    {
+      "id": 25,
+      "verse": "Matius 3:2",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 25
+    },
+    {
+      "id": 26,
+      "verse": "Matius 11:29",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 26
+    },
+    {
+      "id": 27,
+      "verse": "Roma 12:12",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 27
+    },
+    {
+      "id": 28,
+      "verse": "Yesaya 54:10",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 28
+    },
+    {
+      "id": 29,
+      "verse": "Amsal 16:9",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 29
+    },
+    {
+      "id": 30,
+      "verse": "Roma 6:23",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 30
+    },
+    {
+      "id": 31,
+      "verse": "2 Timotius 1:7",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 31
+    },
+    {
+      "id": 32,
+      "verse": "2 Tesalonika 3:3",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 32
+    },
+    {
+      "id": 33,
+      "verse": "2 Samuel 22:33",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 33
+    },
+    {
+      "id": 34,
+      "verse": "Amsal 16:3",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 34
+    },
+    {
+      "id": 35,
+      "verse": "Yesaya 6:8",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 35
+    },
+    {
+      "id": 36,
+      "verse": "Mazmur 28:7",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 36
+    },
+    {
+      "id": 37,
+      "verse": "Roma 10:17",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 37
+    },
+    {
+      "id": 38,
+      "verse": "1 Yohanes 4:18-19",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 38
+    },
+    {
+      "id": 39,
+      "verse": "Yesaya 40:31",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 39
+    },
+    {
+      "id": 40,
+      "verse": "Amsal 2:6",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 40
+    },
+    {
+      "id": 41,
+      "verse": "1 Petrus 5:10",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 41
+    },
+    {
+      "id": 42,
+      "verse": "Roma 10:9",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 42
+    },
+    {
+      "id": 43,
+      "verse": "Mazmur 55:17",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 43
+    },
+    {
+      "id": 44,
+      "verse": "Yosua 1:9",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 44
+    },
+    {
+      "id": 45,
+      "verse": "Kolose 1:20",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 45
+    },
+    {
+      "id": 46,
+      "verse": "Roma 3:23",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 46
+    },
+    {
+      "id": 47,
+      "verse": "1 Korintus 15:3-4",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 47
+    },
+    {
+      "id": 48,
+      "verse": "2 Korintus 12:9",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 48
+    },
+    {
+      "id": 49,
+      "verse": "Amsal 23:23",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 49
+    },
+    {
+      "id": 50,
+      "verse": "Kejadian 15:1",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 50
+    },
+    {
+      "id": 51,
+      "verse": "Roma 15:13",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 51
+    },
+    {
+      "id": 52,
+      "verse": "Ibrani 13:5",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 52
+    },
+    {
+      "id": 53,
+      "verse": "Galatia 3:26",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 53
+    },
+    {
+      "id": 54,
+      "verse": "Yakobus 4:8",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 54
+    },
+    {
+      "id": 55,
+      "verse": "Matius 6:25-34",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 55
+    },
+    {
+      "id": 56,
+      "verse": "Matius 7:7-8",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 56
+    },
+    {
+      "id": 57,
+      "verse": "1 Korintus 13:13",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 57
+    },
+    {
+      "id": 58,
+      "verse": "Yesaya 40:29",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 58
+    },
+    {
+      "id": 59,
+      "verse": "Mazmur 4:8",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 59
+    },
+    {
+      "id": 60,
+      "verse": "1 Timotius 2:8",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 60
+    },
+    {
+      "id": 61,
+      "verse": "Yohanes 4:24",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 61
+    },
+    {
+      "id": 62,
+      "verse": "Efesus 6:10-11",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 62
+    },
+    {
+      "id": 63,
+      "verse": "Amos 5:6",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 63
+    },
+    {
+      "id": 64,
+      "verse": "Yesaya 54:10",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 64
+    },
+    {
+      "id": 65,
+      "verse": "Mazmur 31:24",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 65
+    },
+    {
+      "id": 66,
+      "verse": "Yesaya 1:16-17",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 66
+    },
+    {
+      "id": 67,
+      "verse": "Lukas 24:47",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 67
+    },
+    {
+      "id": 68,
+      "verse": "Markus 11:24",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 68
+    },
+    {
+      "id": 69,
+      "verse": "Roma 12:2",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 69
+    },
+    {
+      "id": 70,
+      "verse": "Filipi 1:27",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 70
+    },
+    {
+      "id": 71,
+      "verse": "Amsal 15:33",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 71
+    },
+    {
+      "id": 72,
+      "verse": "2 Timotius 3:16",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 72
+    },
+    {
+      "id": 73,
+      "verse": "Kejadian 1:27",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 73
+    },
+    {
+      "id": 74,
+      "verse": "Efesus 6:16",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 74
+    },
+    {
+      "id": 75,
+      "verse": "Lukas 21:15",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 75
+    },
+    {
+      "id": 76,
+      "verse": "Mazmur 30:5",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 76
+    },
+    {
+      "id": 77,
+      "verse": "1 Korintus 16:13",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 77
+    },
+    {
+      "id": 78,
+      "verse": "Matius 22:37-40",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 78
+    },
+    {
+      "id": 79,
+      "verse": "Efesus 3:16",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 79
+    },
+    {
+      "id": 80,
+      "verse": "1 Korintus 13:11",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 80
+    },
+    {
+      "id": 81,
+      "verse": "Ibrani 11:6",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 81
+    },
+    {
+      "id": 82,
+      "verse": "Efesus 3:17-19",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 82
+    },
+    {
+      "id": 83,
+      "verse": "Titus 2:11-12",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 83
+    },
+    {
+      "id": 84,
+      "verse": "Efesus 4:24",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 84
+    },
+    {
+      "id": 85,
+      "verse": "1 Korintus 3:2",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 85
+    },
+    {
+      "id": 86,
+      "verse": "Matius 21:21-22",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 86
+    },
+    {
+      "id": 87,
+      "verse": "Roma 1:17",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 87
+    },
+    {
+      "id": 88,
+      "verse": "Yohanes 3:16",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 88
+    },
+    {
+      "id": 89,
+      "verse": "Roma 8:29",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 89
+    },
+    {
+      "id": 90,
+      "verse": "Yehezkiel 33:11",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 90
+    },
+    {
+      "id": 91,
+      "verse": "1 Petrus 1:15-16",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 91
+    },
+    {
+      "id": 92,
+      "verse": "2 Korintus 5:7",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 92
+    },
+    {
+      "id": 93,
+      "verse": "Efesus 6:18",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 93
+    },
+    {
+      "id": 94,
+      "verse": "Mazmur 8:3-4",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 94
+    },
+    {
+      "id": 95,
+      "verse": "Lukas 15:10",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 95
+    },
+    {
+      "id": 96,
+      "verse": "Kolose 1:11",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 96
+    },
+    {
+      "id": 97,
+      "verse": "Matius 5:4",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 97
+    },
+    {
+      "id": 98,
+      "verse": "Yakobus 5:16",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 98
+    },
+    {
+      "id": 99,
+      "verse": "Ibrani 12:2",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 99
+    },
+    {
+      "id": 100,
+      "verse": "Yohanes 13:34-35",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 100
+    },
+    {
+      "id": 101,
+      "verse": "1 Tesalonika 3:12",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 101
+    },
+    {
+      "id": 102,
+      "verse": "Yohanes 15:5",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 102
+    },
+    {
+      "id": 103,
+      "verse": "Hosea 11:4",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 103
+    },
+    {
+      "id": 104,
+      "verse": "Ayub 28:28",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 104
+    },
+    {
+      "id": 105,
+      "verse": "Roma 8:35",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 105
+    },
+    {
+      "id": 106,
+      "verse": "Matius 5:9",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 106
+    },
+    {
+      "id": 107,
+      "verse": "Mazmur 145:18",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 107
+    },
+    {
+      "id": 108,
+      "verse": "Hosea 6:1",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 108
+    },
+    {
+      "id": 109,
+      "verse": "1 Korintus 13:8",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 109
+    },
+    {
+      "id": 110,
+      "verse": "Galatia 2:20",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 110
+    },
+    {
+      "id": 111,
+      "verse": "Efesus 1:17",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 111
+    },
+    {
+      "id": 112,
+      "verse": "Zefanya 3:17",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 112
+    },
+    {
+      "id": 113,
+      "verse": "Ibrani 13:6",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 113
+    },
+    {
+      "id": 114,
+      "verse": "Wahyu 1:3",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 114
+    },
+    {
+      "id": 115,
+      "verse": "Yakobus 3:17",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 115
+    },
+    {
+      "id": 116,
+      "verse": "Roma 8:6",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 116
+    },
+    {
+      "id": 117,
+      "verse": "Pengkhotbah 3:1",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 117
+    },
+    {
+      "id": 118,
+      "verse": "Yakobus 1:5",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 118
+    },
+    {
+      "id": 119,
+      "verse": "Yesaya 48:18",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 119
+    },
+    {
+      "id": 120,
+      "verse": "Ibrani 11:1",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 120
+    },
+    {
+      "id": 121,
+      "verse": "Daniel 9:3",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 121
+    },
+    {
+      "id": 122,
+      "verse": "Mazmur 119:50",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 122
+    },
+    {
+      "id": 123,
+      "verse": "Mazmur 55:22",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 123
+    },
+    {
+      "id": 124,
+      "verse": "Amsal 22:6",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 124
+    },
+    {
+      "id": 125,
+      "verse": "Matius 5:14",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 125
+    },
+    {
+      "id": 126,
+      "verse": "Markus 4:20",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 126
+    },
+    {
+      "id": 127,
+      "verse": "Pengkhotbah 7:12",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 127
+    },
+    {
+      "id": 128,
+      "verse": "Galatia 6:10",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 128
+    },
+    {
+      "id": 129,
+      "verse": "Yohanes 14:13-14",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 129
+    },
+    {
+      "id": 130,
+      "verse": "Mazmur 119:105",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 130
+    },
+    {
+      "id": 131,
+      "verse": "Pengkhotbah 12:13",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 131
+    },
+    {
+      "id": 132,
+      "verse": "1 Yohanes 1:7",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 132
+    },
+    {
+      "id": 133,
+      "verse": "Yesaya 49:13",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 133
+    },
+    {
+      "id": 134,
+      "verse": "Kejadian 1:1",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 134
+    },
+    {
+      "id": 135,
+      "verse": "1 Korintus 3:18",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 135
+    },
+    {
+      "id": 136,
+      "verse": "Efesus 4:11-13",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 136
+    },
+    {
+      "id": 137,
+      "verse": "Kisah Para Rasul 26:20",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 137
+    },
+    {
+      "id": 138,
+      "verse": "Titus 2:13",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 138
+    },
+    {
+      "id": 139,
+      "verse": "Mazmur 71:5",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 139
+    },
+    {
+      "id": 140,
+      "verse": "Filipi 4:7",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 140
+    },
+    {
+      "id": 141,
+      "verse": "Lukas 18:1",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 141
+    },
+    {
+      "id": 142,
+      "verse": "Zakharia 4:6",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 142
+    },
+    {
+      "id": 143,
+      "verse": "Yohanes 16:33",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 143
+    },
+    {
+      "id": 144,
+      "verse": "Amsal 4:7",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 144
+    },
+    {
+      "id": 145,
+      "verse": "Zakharia 9:12",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 145
+    },
+    {
+      "id": 146,
+      "verse": "2 Tesalonika 3:16",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 146
+    },
+    {
+      "id": 147,
+      "verse": "Mazmur 19:14",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 147
+    },
+    {
+      "id": 148,
+      "verse": "1 Raja-raja 3:9",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 148
+    },
+    {
+      "id": 149,
+      "verse": "Yakobus 5:16",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 149
+    },
+    {
+      "id": 150,
+      "verse": "Yohanes 8:12",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 150
+    },
+    {
+      "id": 151,
+      "verse": "Yesaya 26:4",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 151
+    },
+    {
+      "id": 152,
+      "verse": "Lukas 13:3",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 152
+    },
+    {
+      "id": 153,
+      "verse": "Yakobus 1:6-8",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 153
+    },
+    {
+      "id": 154,
+      "verse": "1 Korintus 15:58",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 154
+    },
+    {
+      "id": 155,
+      "verse": "Yakobus 1:5",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 155
+    },
+    {
+      "id": 156,
+      "verse": "Wahyu 1:8",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 156
+    },
+    {
+      "id": 157,
+      "verse": "Mazmur 46:1",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 157
+    },
+    {
+      "id": 158,
+      "verse": "1 Petrus 1:8-9",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 158
+    },
+    {
+      "id": 159,
+      "verse": "Yesaya 26:3",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 159
+    },
+    {
+      "id": 160,
+      "verse": "Kisah Para Rasul 2:38",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 160
+    },
+    {
+      "id": 161,
+      "verse": "Mazmur 46:10",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 161
+    },
+    {
+      "id": 162,
+      "verse": "Yoel 2:12-13",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 162
+    },
+    {
+      "id": 163,
+      "verse": "Titus 3:4",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 163
+    },
+    {
+      "id": 164,
+      "verse": "Yohanes 17:3",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 164
+    },
+    {
+      "id": 165,
+      "verse": "1 Tesalonika 5:16-18",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 165
+    },
+    {
+      "id": 166,
+      "verse": "1 Tesalonika 5:17",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 166
+    },
+    {
+      "id": 167,
+      "verse": "Kolose 1:10",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 167
+    },
+    {
+      "id": 168,
+      "verse": "Markus 11:22-24",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 168
+    },
+    {
+      "id": 169,
+      "verse": "Yesaya 12:2",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 169
+    },
+    {
+      "id": 170,
+      "verse": "Yohanes 14:1",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 170
+    },
+    {
+      "id": 171,
+      "verse": "Yohanes 3:3",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 171
+    },
+    {
+      "id": 172,
+      "verse": "1 Timotius 6:12",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 172
+    },
+    {
+      "id": 173,
+      "verse": "Wahyu 21:4",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 173
+    },
+    {
+      "id": 174,
+      "verse": "Mazmur 34:15",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 174
+    },
+    {
+      "id": 175,
+      "verse": "Mazmur 10:17",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 175
+    },
+    {
+      "id": 176,
+      "verse": "1 Tesalonika 4:16-17",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 176
+    },
+    {
+      "id": 177,
+      "verse": "1 Korintus 1:18",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 177
+    },
+    {
+      "id": 178,
+      "verse": "Mazmur 119:76",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 178
+    },
+    {
+      "id": 179,
+      "verse": "Mazmur 18:32",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 179
+    },
+    {
+      "id": 180,
+      "verse": "Yesaya 52:7",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 180
+    },
+    {
+      "id": 181,
+      "verse": "1 Korintus 10:31",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 181
+    },
+    {
+      "id": 182,
+      "verse": "Mazmur 34:8",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 182
+    },
+    {
+      "id": 183,
+      "verse": "Amsal 18:10",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 183
+    },
+    {
+      "id": 184,
+      "verse": "Kolose 3:23",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 184
+    },
+    {
+      "id": 185,
+      "verse": "Mazmur 136:1-3",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 185
+    },
+    {
+      "id": 186,
+      "verse": "Ibrani 10:22",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 186
+    },
+    {
+      "id": 187,
+      "verse": "Yesaya 40:1",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 187
+    },
+    {
+      "id": 188,
+      "verse": "Keluaran 3:14",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 188
+    },
+    {
+      "id": 189,
+      "verse": "Kolose 2:6-7",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 189
+    },
+    {
+      "id": 190,
+      "verse": "Filipi 2:9-11",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 190
+    },
+    {
+      "id": 191,
+      "verse": "Daniel 12:3",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 191
+    },
+    {
+      "id": 192,
+      "verse": "Efesus 4:29",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 192
+    },
+    {
+      "id": 193,
+      "verse": "Yesaya 40:31",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 193
+    },
+    {
+      "id": 194,
+      "verse": "1 Petrus 4:8",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 194
+    },
+    {
+      "id": 195,
+      "verse": "Amsal 24:10",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 195
+    },
+    {
+      "id": 196,
+      "verse": "Filipi 2:3-4",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 196
+    },
+    {
+      "id": 197,
+      "verse": "Efesus 3:20-21",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 197
+    },
+    {
+      "id": 198,
+      "verse": "1 Yohanes 3:22",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 198
+    },
+    {
+      "id": 199,
+      "verse": "Efesus 5:15-16",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 199
+    },
+    {
+      "id": 200,
+      "verse": "Ibrani 6:19",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 200
+    },
+    {
+      "id": 201,
+      "verse": "Mazmur 37:11",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 201
+    },
+    {
+      "id": 202,
+      "verse": "1 Petrus 3:15",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 202
+    },
+    {
+      "id": 203,
+      "verse": "Mikha 6:8",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 203
+    },
+    {
+      "id": 204,
+      "verse": "Yohanes 11:40",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 204
+    },
+    {
+      "id": 205,
+      "verse": "Yeremia 31:19",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 205
+    },
+    {
+      "id": 206,
+      "verse": "2 Korintus 7:6",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 206
+    },
+    {
+      "id": 207,
+      "verse": "Mazmur 111:10",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 207
+    },
+    {
+      "id": 208,
+      "verse": "Mazmur 29:11",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 208
+    },
+    {
+      "id": 209,
+      "verse": "Yesaya 35:3-4",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 209
+    },
+    {
+      "id": 210,
+      "verse": "Mazmur 100:1-5",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 210
+    },
+    {
+      "id": 211,
+      "verse": "Matius 1:1",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 211
+    },
+    {
+      "id": 212,
+      "verse": "2 Korintus 4:18",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 212
+    },
+    {
+      "id": 213,
+      "verse": "Yakobus 2:17",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 213
+    },
+    {
+      "id": 214,
+      "verse": "Ibrani 11:1",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 214
+    },
+    {
+      "id": 215,
+      "verse": "Yesaya 43:18-19",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 215
+    },
+    {
+      "id": 216,
+      "verse": "Galatia 5:22-23",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 216
+    },
+    {
+      "id": 217,
+      "verse": "2 Korintus 13:11",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 217
+    },
+    {
+      "id": 218,
+      "verse": "Yesaya 65:24",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 218
+    },
+    {
+      "id": 219,
+      "verse": "Ibrani 5:12-14",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 219
+    },
+    {
+      "id": 220,
+      "verse": "Mazmur 139:1-3",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 220
+    },
+    {
+      "id": 221,
+      "verse": "1 Petrus 2:9",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 221
+    },
+    {
+      "id": 222,
+      "verse": "2 Korintus 3:18",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 222
+    },
+    {
+      "id": 223,
+      "verse": "Mazmur 73:26",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 223
+    },
+    {
+      "id": 224,
+      "verse": "2 Tawarikh 7:14",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 224
+    },
+    {
+      "id": 225,
+      "verse": "1 Korintus 16:13-14",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 225
+    },
+    {
+      "id": 226,
+      "verse": "1 Tesalonika 5:24",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 226
+    },
+    {
+      "id": 227,
+      "verse": "Lukas 17:6",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 227
+    },
+    {
+      "id": 228,
+      "verse": "Amsal 12:15",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 228
+    },
+    {
+      "id": 229,
+      "verse": "Amsal 8:11",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 229
+    },
+    {
+      "id": 230,
+      "verse": "Filipi 1:9",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 230
+    },
+    {
+      "id": 231,
+      "verse": "2 Timotius 2:22",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 231
+    },
+    {
+      "id": 232,
+      "verse": "Yeremia 8:18",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 232
+    },
+    {
+      "id": 233,
+      "verse": "Kolose 2:6-7",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 233
+    },
+    {
+      "id": 234,
+      "verse": "Efesus 4:15",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 234
+    },
+    {
+      "id": 235,
+      "verse": "Matius 22:37-39",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 235
+    },
+    {
+      "id": 236,
+      "verse": "Yakobus 3:18",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 236
+    },
+    {
+      "id": 237,
+      "verse": "Roma 5:1",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 237
+    },
+    {
+      "id": 238,
+      "verse": "Yohanes 16:33",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 238
+    },
+    {
+      "id": 239,
+      "verse": "Mazmur 150:6",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 239
+    },
+    {
+      "id": 240,
+      "verse": "1 Petrus 2:2",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 240
+    },
+    {
+      "id": 241,
+      "verse": "Filipi 3:14",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 241
+    },
+    {
+      "id": 242,
+      "verse": "Lukas 5:32",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 242
+    },
+    {
+      "id": 243,
+      "verse": "Keluaran 20:1-17",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 243
+    },
+    {
+      "id": 244,
+      "verse": "Mazmur 139:13-14",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 244
+    },
+    {
+      "id": 245,
+      "verse": "Roma 12:9-10",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 245
+    },
+    {
+      "id": 246,
+      "verse": "Roma 4:20-21",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 246
+    },
+    {
+      "id": 247,
+      "verse": "1 Timotius 4:10",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 247
+    },
+    {
+      "id": 248,
+      "verse": "Efesus 5:20",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 248
+    },
+    {
+      "id": 249,
+      "verse": "Mazmur 17:6",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 249
+    },
+    {
+      "id": 250,
+      "verse": "Roma 2:4",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 250
+    },
+    {
+      "id": 251,
+      "verse": "2 Korintus 13:11",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 251
+    },
+    {
+      "id": 252,
+      "verse": "Mazmur 34:18",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 252
+    },
+    {
+      "id": 253,
+      "verse": "Amsal 13:10",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 253
+    },
+    {
+      "id": 254,
+      "verse": "Yohanes 6:47",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 254
+    },
+    {
+      "id": 255,
+      "verse": "Mazmur 27:1",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 255
+    },
+    {
+      "id": 256,
+      "verse": "1 Yohanes 4:16",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 256
+    },
+    {
+      "id": 257,
+      "verse": "Roma 8:26",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 257
+    },
+    {
+      "id": 258,
+      "verse": "Yesaya 32:17",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 258
+    },
+    {
+      "id": 259,
+      "verse": "Hosea 14:1",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 259
+    },
+    {
+      "id": 260,
+      "verse": "Yakobus 3:17",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 260
+    },
+    {
+      "id": 261,
+      "verse": "1 Tesalonika 5:8",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 261
+    },
+    {
+      "id": 262,
+      "verse": "Mazmur 84:5",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 262
+    },
+    {
+      "id": 263,
+      "verse": "1 Korintus 14:33",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 263
+    },
+    {
+      "id": 264,
+      "verse": "Filipi 1:6",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 264
+    },
+    {
+      "id": 265,
+      "verse": "2 Tesalonika 2:16-17",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 265
+    },
+    {
+      "id": 266,
+      "verse": "Matius 21:22",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 266
+    },
+    {
+      "id": 267,
+      "verse": "Kolose 4:11",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 267
+    },
+    {
+      "id": 268,
+      "verse": "1 Petrus 3:12",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 268
+    },
+    {
+      "id": 269,
+      "verse": "2 Petrus 3:18",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 269
+    },
+    {
+      "id": 270,
+      "verse": "Amsal 9:10",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 270
+    },
+    {
+      "id": 271,
+      "verse": "Amsal 14:8",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 271
+    },
+    {
+      "id": 272,
+      "verse": "Efesus 1:16-17",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 272
+    },
+    {
+      "id": 273,
+      "verse": "Yesaya 30:15",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 273
+    },
+    {
+      "id": 274,
+      "verse": "Markus 16:15",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 274
+    },
+    {
+      "id": 275,
+      "verse": "Ibrani 12:11",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 275
+    },
+    {
+      "id": 276,
+      "verse": "Yohanes 15:7",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 276
+    },
+    {
+      "id": 277,
+      "verse": "Amos 5:14-15",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 277
+    },
+    {
+      "id": 278,
+      "verse": "Markus 1:35",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 278
+    },
+    {
+      "id": 279,
+      "verse": "Habakuk 2:4",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 279
+    },
+    {
+      "id": 280,
+      "verse": "Efesus 1:3-6",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 280
+    },
+    {
+      "id": 281,
+      "verse": "Kisah Para Rasul 3:19",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 281
+    },
+    {
+      "id": 282,
+      "verse": "Ibrani 12:1-2",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 282
+    },
+    {
+      "id": 283,
+      "verse": "Kejadian 12:1-3",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 283
+    },
+    {
+      "id": 284,
+      "verse": "Amsal 11:2",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 284
+    },
+    {
+      "id": 285,
+      "verse": "Ibrani 6:1",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 285
+    },
+    {
+      "id": 286,
+      "verse": "Matius 16:24",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 286
+    },
+    {
+      "id": 287,
+      "verse": "Filipi 1:6",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 287
+    },
+    {
+      "id": 288,
+      "verse": "Roma 8:37",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 288
+    },
+    {
+      "id": 289,
+      "verse": "Yohanes 1:12",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 289
+    },
+    {
+      "id": 290,
+      "verse": "Wahyu 21:1-3",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 290
+    },
+    {
+      "id": 291,
+      "verse": "Matius 13:23",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 291
+    },
+    {
+      "id": 292,
+      "verse": "Efesus 3:17",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 292
+    },
+    {
+      "id": 293,
+      "verse": "Matius 7:12",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 293
+    },
+    {
+      "id": 294,
+      "verse": "Yohanes 14:6",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 294
+    },
+    {
+      "id": 295,
+      "verse": "Yohanes 14:18",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 295
+    },
+    {
+      "id": 296,
+      "verse": "Yohanes 3:36",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 296
+    },
+    {
+      "id": 297,
+      "verse": "Daniel 2:20-21",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 297
+    },
+    {
+      "id": 298,
+      "verse": "Roma 8:26-27",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 298
+    },
+    {
+      "id": 299,
+      "verse": "Habakuk 3:19",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 299
+    },
+    {
+      "id": 300,
+      "verse": "2 Korintus 7:10",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 300
+    },
+    {
+      "id": 301,
+      "verse": "Yohanes 15:12-13",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 301
+    },
+    {
+      "id": 302,
+      "verse": "Wahyu 3:19",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 302
+    },
+    {
+      "id": 303,
+      "verse": "Mazmur 29:11",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 303
+    },
+    {
+      "id": 304,
+      "verse": "Matius 7:24",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 304
+    },
+    {
+      "id": 305,
+      "verse": "Roma 5:1",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 305
+    },
+    {
+      "id": 306,
+      "verse": "Markus 9:23",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 306
+    },
+    {
+      "id": 307,
+      "verse": "Amsal 3:5-6",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 307
+    },
+    {
+      "id": 308,
+      "verse": "Roma 15:4",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 308
+    },
+    {
+      "id": 309,
+      "verse": "Yohanes 6:35",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 309
+    },
+    {
+      "id": 310,
+      "verse": "Amsal 19:20",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 310
+    },
+    {
+      "id": 311,
+      "verse": "Efesus 2:14",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 311
+    },
+    {
+      "id": 312,
+      "verse": "Mazmur 118:14",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 312
+    },
+    {
+      "id": 313,
+      "verse": "Lukas 7:50",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 313
+    },
+    {
+      "id": 314,
+      "verse": "1 Yohanes 4:7-8",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 314
+    },
+    {
+      "id": 315,
+      "verse": "Yohanes 15:8",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 315
+    },
+    {
+      "id": 316,
+      "verse": "Mazmur 91:1-2",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 316
+    },
+    {
+      "id": 317,
+      "verse": "Kolose 1:28",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 317
+    },
+    {
+      "id": 318,
+      "verse": "Roma 12:1",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 318
+    },
+    {
+      "id": 319,
+      "verse": "Mazmur 42:5",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 319
+    },
+    {
+      "id": 320,
+      "verse": "2 Petrus 1:5-8",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 320
+    },
+    {
+      "id": 321,
+      "verse": "1 Timotius 4:15",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 321
+    },
+    {
+      "id": 322,
+      "verse": "Lukas 2:10-11",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 322
+    },
+    {
+      "id": 323,
+      "verse": "Kolose 1:5",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 323
+    },
+    {
+      "id": 324,
+      "verse": "2 Timotius 1:12",
+      "category": "iman",
+      "used": false,
+      "dayOfYear": 324
+    },
+    {
+      "id": 325,
+      "verse": "Lukas 19:10",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 325
+    },
+    {
+      "id": 326,
+      "verse": "Yeremia 29:7",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 326
+    },
+    {
+      "id": 327,
+      "verse": "Kolose 1:27",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 327
+    },
+    {
+      "id": 328,
+      "verse": "Efesus 4:32",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 328
+    },
+    {
+      "id": 329,
+      "verse": "Matius 11:28-30",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 329
+    },
+    {
+      "id": 330,
+      "verse": "1 Korintus 3:6-7",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 330
+    },
+    {
+      "id": 331,
+      "verse": "Yesaya 25:8",
+      "category": "penghiburan",
+      "used": false,
+      "dayOfYear": 331
+    },
+    {
+      "id": 332,
+      "verse": "Lukas 15:7",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 332
+    },
+    {
+      "id": 333,
+      "verse": "Yeremia 33:3",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 333
+    },
+    {
+      "id": 334,
+      "verse": "Yeremia 3:12",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 334
+    },
+    {
+      "id": 335,
+      "verse": "Roma 8:38-39",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 335
+    },
+    {
+      "id": 336,
+      "verse": "Mikah 7:18",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 336
+    },
+    {
+      "id": 337,
+      "verse": "Efesus 6:15",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 337
+    },
+    {
+      "id": 338,
+      "verse": "Efesus 2:4-5",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 338
+    },
+    {
+      "id": 339,
+      "verse": "Ezra 10:11",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 339
+    },
+    {
+      "id": 340,
+      "verse": "Kolose 3:15",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 340
+    },
+    {
+      "id": 341,
+      "verse": "1 Petrus 1:3",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 341
+    },
+    {
+      "id": 342,
+      "verse": "Kolose 3:14",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 342
+    },
+    {
+      "id": 343,
+      "verse": "Wahyu 2:5",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 343
+    },
+    {
+      "id": 344,
+      "verse": "Markus 1:1",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 344
+    },
+    {
+      "id": 345,
+      "verse": "Yesaya 40:29",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 345
+    },
+    {
+      "id": 346,
+      "verse": "Yoel 3:10",
+      "category": "kekuatan",
+      "used": false,
+      "dayOfYear": 346
+    },
+    {
+      "id": 347,
+      "verse": "1 Korintus 13:4-7",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 347
+    },
+    {
+      "id": 348,
+      "verse": "2 Petrus 3:9",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 348
+    },
+    {
+      "id": 349,
+      "verse": "Yakobus 1:22",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 349
+    },
+    {
+      "id": 350,
+      "verse": "Lukas 2:52",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 350
+    },
+    {
+      "id": 351,
+      "verse": "Yeremia 31:3",
+      "category": "kasih",
+      "used": false,
+      "dayOfYear": 351
+    },
+    {
+      "id": 352,
+      "verse": "Amsal 16:16",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 352
+    },
+    {
+      "id": 353,
+      "verse": "Yesaya 44:22",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 353
+    },
+    {
+      "id": 354,
+      "verse": "Kisah Para Rasul 17:30",
+      "category": "pertobatan",
+      "used": false,
+      "dayOfYear": 354
+    },
+    {
+      "id": 355,
+      "verse": "Roma 8:28",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 355
+    },
+    {
+      "id": 356,
+      "verse": "Filipi 1:20",
+      "category": "harapan",
+      "used": false,
+      "dayOfYear": 356
+    },
+    {
+      "id": 357,
+      "verse": "Mazmur 1:1-3",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 357
+    },
+    {
+      "id": 358,
+      "verse": "Amsal 10:8",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 358
+    },
+    {
+      "id": 359,
+      "verse": "Kolose 1:15-17",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 359
+    },
+    {
+      "id": 360,
+      "verse": "Efesus 2:10",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 360
+    },
+    {
+      "id": 361,
+      "verse": "Hakim-hakim 6:24",
+      "category": "damai",
+      "used": false,
+      "dayOfYear": 361
+    },
+    {
+      "id": 362,
+      "verse": "Matius 6:33",
+      "category": "hikmat",
+      "used": false,
+      "dayOfYear": 362
+    },
+    {
+      "id": 363,
+      "verse": "Mazmur 118:24",
+      "category": "doa",
+      "used": false,
+      "dayOfYear": 363
+    },
+    {
+      "id": 364,
+      "verse": "1 Petrus 5:10",
+      "category": "pertumbuhan_rohani",
+      "used": false,
+      "dayOfYear": 364
+    },
+    {
+      "id": 365,
+      "verse": "Yohanes 11:25",
+      "category": "umum",
+      "used": false,
+      "dayOfYear": 365
+    }
+  ],
+  "specialDayVerses": {
+    "natal": "Lukas 2:10-11",
+    "paskah": "Yohanes 11:25-26",
+    "jumat_agung": "Yesaya 53:5",
+    "pentakosta": "Kisah Para Rasul 2:38",
+    "kenaikan": "Kisah Para Rasul 1:8-9",
+    "minggu_palma": "Yohanes 12:13",
+    "rabu_abu": "Yoel 2:12-13",
+    "tahun_baru": "Yesaya 43:18-19",
+    "epifani": "Matius 2:1-2",
+    "kemerdekaan": "Galatia 5:1",
+    "kasih_sayang": "1 Korintus 13:4-7"
+  },
+  "metadata": {
+    "totalVerses": 365,
+    "generatedAt": "2026-01-14T00:37:13.257Z",
+    "note": "365 ayat unik untuk tahun 2029. Tidak ada ayat yang berulang dalam satu tahun. Ayat hari besar ada di specialDayVerses.",
+    "categories": [
+      "kasih - ❤️ Kasih",
+      "iman - ✝️ Iman",
+      "harapan - ✨ Harapan",
+      "kekuatan - 💪 Kekuatan",
+      "penghiburan - 🤗 Penghiburan",
+      "doa - 🙏 Doa",
+      "hikmat - ⚖️ Hikmat",
+      "damai - 🕊️ Damai Sejahtera",
+      "pertobatan - 🔥 Pertobatan",
+      "pertumbuhan_rohani - 🌱 Pertumbuhan Rohani",
+      "umum - 📖 Umum"
+    ]
+  }
+}
