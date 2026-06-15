@@ -271,7 +271,10 @@ function isConnected() {
  */
 function getStatus() {
   return {
+    connected: isConnected(),
+    configured: !!process.env.MONGODB_URI,
     state: connectionState,
+    database: mongooseInstance?.connection?.name || null,
     readyState: mongooseInstance?.connection?.readyState || 0,
     reconnectAttempts,
   };

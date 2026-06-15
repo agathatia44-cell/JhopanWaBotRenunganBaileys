@@ -208,10 +208,11 @@ async function startSock() {
       // Connection tertutup - handle reconnect
       if (connection === "close") {
         const reason = lastDisconnect?.error?.output?.statusCode;
+        const errorMsg = lastDisconnect?.error?.message || "unknown";
         connectionState = "DISCONNECTED";
 
         console.log(
-          `⚠️ WhatsApp terputus. Reason code: ${reason || "unknown"}`,
+          `⚠️ WhatsApp terputus. Reason: ${reason || "unknown"} | Error: ${errorMsg}`
         );
 
         if (reason === DisconnectReason.loggedOut) {
@@ -219,11 +220,24 @@ async function startSock() {
           console.error("❌ Session logged out! Perlu scan QR ulang.");
           connectionState = "AUTH_FAILURE";
 
+          // Clear auth di MongoDB agar fresh start
+          try {
+            if (mongoService.isConnected()) {
+              const { clearAllAuthData } = require("./services/mongoAuthState");
+              await clearAllAuthData();
+              console.log("🗑️ Auth data cleared dari MongoDB");
+            }
+          } catch (e) {
+            console.error("Failed to clear auth:", e.message);
+          }
+
           await notifyAdmins(
-            "❌ *Autentikasi WhatsApp Gagal!*\n\n" +
-              "Session expired atau tidak valid.\n" +
-              "Silakan hapus folder `baileys_auth_info` dan restart bot untuk scan QR ulang.",
+            "❌ *Autentikasi WhatsApp Gagal!*\\n\\n" +
+              "Session expired atau tidak valid.\\n" +
+              "Bot akan generate QR baru otomatis.",
           );
+          // Auto-restart untuk generate QR baru
+          setTimeout(() => startSock(), 3000);
         } else if (reason === DisconnectReason.connectionReplaced) {
           console.log(
             "⚠️ Koneksi diganti (perangkat lain login). Reconnecting...",
@@ -236,17 +250,36 @@ async function startSock() {
           console.error("❌ Multi-device mismatch. Perlu login ulang.");
           connectionState = "AUTH_FAILURE";
           await notifyAdmins(
-            "❌ *Multi-device Mismatch!*\n\nHapus folder `baileys_auth_info` dan scan QR ulang.",
+            "❌ *Multi-device Mismatch!*\\n\\nScan QR ulang diperlukan.",
           );
+          setTimeout(() => startSock(), 3000);
         } else {
           // Transient disconnect - auto reconnect
-          if (reason !== 428) {
-            // 428 = connectionClosed, skip notification
+          // Track disconnects without QR (prevent infinite loop)
+          if (!sock.user && reconnectAttempts >= 3) {
+            console.log("⚠️ 3x disconnect tanpa login — clearing auth & fresh start");
+            try {
+              if (mongoService.isConnected()) {
+                const { clearAllAuthData } = require("./services/mongoAuthState");
+                await clearAllAuthData();
+                console.log("🗑️ Auth data cleared dari MongoDB");
+              }
+            } catch (e) {
+              console.error("Failed to clear auth:", e.message);
+            }
+            reconnectAttempts = 0;
             await notifyAdmins(
-              `⚠️ *WhatsApp Terputus!*\n\nKode: ${reason || "unknown"}\n\n🔄 Reconnect otomatis...`,
+              "🔄 *Auth Reset!*\\n\\nBot gagal connect 3x. Auth di-reset, QR baru akan muncul..."
             );
+            setTimeout(() => startSock(), 3000);
+          } else {
+            if (reason !== 428) {
+              await notifyAdmins(
+                `⚠️ *WhatsApp Terputus!*\\n\\nKode: ${reason || "unknown"}\\nError: ${errorMsg}\\n\\n🔄 Reconnect otomatis...`,
+              );
+            }
+            scheduleReconnect();
           }
-          scheduleReconnect();
         }
       }
     }
