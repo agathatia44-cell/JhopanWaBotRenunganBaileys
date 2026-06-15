@@ -314,47 +314,81 @@ else
     cloudflared tunnel route dns "$TUNNEL_NAME" "$FULL_HOSTNAME" 2>/dev/null || warn "DNS route may already exist"
     success "DNS routed: $FULL_HOSTNAME"
 
-    # Write config.yml
-    CONFIG_DIR="$HOME/.cloudflared"
-    CRED_FILE=$(ls "${CONFIG_DIR}/${TUNNEL_ID}.json" 2>/dev/null || echo "")
+    # Write config to SYSTEM path (/etc/cloudflared/) for service compatibility
+    SYS_CONFIG_DIR="/etc/cloudflared"
+    USER_CONFIG_DIR="$HOME/.cloudflared"
+    sudo mkdir -p "$SYS_CONFIG_DIR"
+
+    # Find credentials file
+    CRED_FILE=$(ls "${USER_CONFIG_DIR}/${TUNNEL_ID}.json" 2>/dev/null || echo "")
     if [ -z "$CRED_FILE" ]; then
-      CRED_FILE="${CONFIG_DIR}/${TUNNEL_ID}.json"
+      CRED_FILE="${USER_CONFIG_DIR}/${TUNNEL_ID}.json"
     fi
 
-    cat > "${CONFIG_DIR}/config.yml" << EOF
+    # Copy cert and credentials to system path
+    sudo cp -f "${USER_CONFIG_DIR}/cert.pem" "${SYS_CONFIG_DIR}/" 2>/dev/null || true
+    sudo cp -f "${CRED_FILE}" "${SYS_CONFIG_DIR}/" 2>/dev/null || true
+
+    SYS_CRED_FILE="${SYS_CONFIG_DIR}/$(basename "$CRED_FILE")"
+
+    # Write config with QUIC protocol (more reliable behind NAT/firewalls)
+    sudo tee "${SYS_CONFIG_DIR}/config.yml" > /dev/null << EOF
 tunnel: ${TUNNEL_ID}
-credentials-file: ${CRED_FILE}
+credentials-file: ${SYS_CRED_FILE}
+protocol: quic
 
 ingress:
   - hostname: ${FULL_HOSTNAME}
-    service: http://localhost:3000
+    service: http://localhost:${WEBHOOK_PORT:-3000}
   - service: http_status:404
 EOF
 
-    success "config.yml written"
-    add_rollback "rm -f ${CONFIG_DIR}/config.yml"
+    # Also write to user config for manual runs
+    cat > "${USER_CONFIG_DIR}/config.yml" << EOF
+tunnel: ${TUNNEL_ID}
+credentials-file: ${CRED_FILE}
+protocol: quic
 
-    # Install as service (with proper error handling)
+ingress:
+  - hostname: ${FULL_HOSTNAME}
+    service: http://localhost:${WEBHOOK_PORT:-3000}
+  - service: http_status:404
+EOF
+
+    success "config.yml written (system + user path, QUIC protocol)"
+    add_rollback "sudo rm -f ${SYS_CONFIG_DIR}/config.yml"
+
+    # Install as system service
     info "Installing cloudflared as system service..."
     if command -v systemctl &>/dev/null; then
-      # Uninstall old service first (ignore errors)
+      # Uninstall old service first
       sudo cloudflared service uninstall 2>/dev/null || true
-      # Install fresh
-      sudo cloudflared service install 2>/dev/null || true
+      sleep 1
+
+      # Install with explicit system config path
+      sudo cloudflared --config "${SYS_CONFIG_DIR}/config.yml" service install 2>&1 || true
+      sleep 1
+
+      # Reload, enable, start
       sudo systemctl daemon-reload 2>/dev/null || true
       sudo systemctl enable cloudflared 2>/dev/null || true
       sudo systemctl restart cloudflared 2>/dev/null || true
 
-      # Verify service is running
-      sleep 2
+      # Wait and verify
+      sleep 3
       if systemctl is-active --quiet cloudflared 2>/dev/null; then
-        success "cloudflared service installed & running"
+        success "cloudflared service installed & running (QUIC)"
       else
-        warn "Service installed but not running. Start manually: sudo systemctl start cloudflared"
+        # Try to get error details
+        SVC_STATUS=$(systemctl status cloudflared 2>&1 | head -5)
+        warn "Service not running. Status:"
+        echo "$SVC_STATUS" | while read -r line; do echo "    $line"; done
+        warn "Try manually: cloudflared tunnel --protocol quic run $TUNNEL_NAME"
       fi
       add_rollback "sudo cloudflared service uninstall 2>/dev/null"
     else
-      warn "systemctl not found. Start tunnel manually: cloudflared tunnel run $TUNNEL_NAME"
+      warn "systemctl not found. Start tunnel manually:"
+      echo "    cloudflared tunnel --protocol quic run $TUNNEL_NAME"
     fi
 
     # Update .env with WEBHOOK_URL
