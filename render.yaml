@@ -16,7 +16,7 @@ services:
     region: singapore
     plan: free
     buildCommand: bash setup-render.sh
-    startCommand: node src/index.js
+    startCommand: npm run start:render
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
