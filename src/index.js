@@ -169,19 +169,9 @@ console.log(`
   });
 
   // ============================================
-  // MEMORY MONITORING (Baileys - target ~128MB)
+  // MEMORY MONITORING
   // ============================================
 
-  const IS_RENDER = !!process.env.RENDER;
-  const MEMORY_CHECK_INTERVAL = IS_RENDER ? 5 * 60 * 1000 : 30 * 60 * 1000; // 5 min (Render) / 30 min (other)
-  const MEMORY_WARN_MB = IS_RENDER ? 200 : 180;    // Warning threshold
-  const MEMORY_KILL_MB = IS_RENDER ? 350 : 999;     // Auto-restart threshold (Render: before 512MB limit)
-  const AUTO_RESTART_HOURS = IS_RENDER ? 12 : 24;   // Periodic restart (prevent long-term leak)
-
-  console.log(`🧠 Memory monitor: warn >${MEMORY_WARN_MB}MB, restart >${MEMORY_KILL_MB}MB`);
-  console.log(`🔄 Auto-restart: every ${AUTO_RESTART_HOURS}h`);
-
-  // Log & monitor memory usage
   setInterval(
     () => {
       const used = process.memoryUsage();
@@ -192,44 +182,7 @@ console.log(`
       console.log(
         `📊 Memory: Heap ${heapMB}MB | RSS ${rssMB}MB | Uptime: ${uptimeH}h`,
       );
-
-      // Force GC jika memory tinggi
-      if (rssMB > MEMORY_WARN_MB) {
-        console.warn(
-          `⚠️ Memory tinggi! RSS: ${rssMB}MB (threshold: ${MEMORY_WARN_MB}MB)`,
-        );
-        if (global.gc) {
-          global.gc();
-          const afterGC = Math.round(process.memoryUsage().rss / 1024 / 1024);
-          console.log(`🧹 GC done: ${rssMB}MB → ${afterGC}MB`);
-        }
-      }
-
-      // Auto-restart jika memory kritis (Render: graceful exit → Render auto-restarts)
-      if (rssMB > MEMORY_KILL_MB) {
-        console.error(
-          `🚨 Memory critical! RSS: ${rssMB}MB > ${MEMORY_KILL_MB}MB — restarting...`,
-        );
-        if (IS_RENDER) {
-          // On Render: process.exit → Render auto-restarts the service
-          process.exit(1);
-        } else {
-          // On PM2: process.exit → PM2 auto-restarts
-          process.exit(0);
-        }
-      }
     },
-    MEMORY_CHECK_INTERVAL,
-  );
-
-  // Periodic auto-restart (prevent long-term memory leak accumulation)
-  setTimeout(
-    () => {
-      console.log(
-        `🔄 Periodic restart after ${AUTO_RESTART_HOURS}h — preventing memory leak`,
-      );
-      process.exit(0);
-    },
-    AUTO_RESTART_HOURS * 60 * 60 * 1000,
-  );
+    30 * 60 * 1000,
+  ); // 30 menit
 })();
