@@ -259,42 +259,46 @@ else
   fi
 
   if [ "$SETUP_TUNNEL" = true ]; then
-    echo ""
-    info "Opening browser for Cloudflare login..."
-    info "Please authorize cloudflared in your browser"
-    echo ""
-    
-    cloudflared tunnel login
-    
-    success "Cloudflare authorized!"
-    
-    # Get available domains from certificate
-    CERT_FILE=$(ls ~/.cloudflared/cert.pem 2>/dev/null || ls /etc/cloudflared/cert.pem 2>/dev/null)
+    # Check if already authorized
+    CERT_FILE=$(ls ~/.cloudflared/cert.pem 2>/dev/null || ls /etc/cloudflared/cert.pem 2>/dev/null || true)
+    if [ -n "$CERT_FILE" ]; then
+      success "Cloudflare already authorized (cert found: $CERT_FILE)"
+    else
+      echo ""
+      info "Opening browser for Cloudflare login..."
+      info "Please authorize cloudflared in your browser"
+      echo ""
+      cloudflared tunnel login
+      success "Cloudflare authorized!"
+      CERT_FILE=$(ls ~/.cloudflared/cert.pem 2>/dev/null || ls /etc/cloudflared/cert.pem 2>/dev/null || true)
+    fi
+
     if [ -z "$CERT_FILE" ]; then
       error "Certificate not found. Please run 'cloudflared tunnel login' manually."
       exit 1
     fi
 
-    # Create tunnel
+    # Create tunnel (or reuse existing)
     TUNNEL_NAME="wa-renungan"
-    
-    # Check if tunnel already exists
-    EXISTING=$(cloudflared tunnel list 2>/dev/null | grep "$TUNNEL_NAME" || true)
+    EXISTING=$(cloudflared tunnel list 2>/dev/null | grep -w "$TUNNEL_NAME" || true)
     if [ -n "$EXISTING" ]; then
-      warn "Tunnel '$TUNNEL_NAME' already exists"
-      TUNNEL_ID=$(cloudflared tunnel list 2>/dev/null | grep "$TUNNEL_NAME" | awk '{print $1}')
-      success "Using existing tunnel: $TUNNEL_ID"
+      TUNNEL_ID=$(cloudflared tunnel list 2>/dev/null | grep -w "$TUNNEL_NAME" | head -1 | awk '{print $1}')
+      success "Using existing tunnel '$TUNNEL_NAME': $TUNNEL_ID"
     else
       info "Creating tunnel: $TUNNEL_NAME"
-      cloudflared tunnel create "$TUNNEL_NAME"
-      TUNNEL_ID=$(cloudflared tunnel list 2>/dev/null | grep "$TUNNEL_NAME" | awk '{print $1}')
+      cloudflared tunnel create "$TUNNEL_NAME" 2>/dev/null || true
+      TUNNEL_ID=$(cloudflared tunnel list 2>/dev/null | grep -w "$TUNNEL_NAME" | head -1 | awk '{print $1}')
+      if [ -z "$TUNNEL_ID" ]; then
+        error "Failed to create tunnel"
+        exit 1
+      fi
       success "Tunnel created: $TUNNEL_ID"
       add_rollback "cloudflared tunnel delete $TUNNEL_NAME 2>/dev/null"
     fi
 
     # Ask for domain
     echo ""
-    read -p "  Domain untuk tunnel (contoh: example.com): " DOMAIN
+    read -p "  Domain untuk tunnel (contoh: jhopan.my.id): " DOMAIN
     while [ -z "$DOMAIN" ]; do
       error "Domain tidak boleh kosong"
       read -p "  Domain untuk tunnel: " DOMAIN
@@ -305,14 +309,14 @@ else
     SUBDOMAIN=${SUBDOMAIN:-"wa-bot"}
     FULL_HOSTNAME="${SUBDOMAIN}.${DOMAIN}"
 
-    # Route DNS
+    # Route DNS (use full hostname, not just subdomain)
     info "Routing DNS: $FULL_HOSTNAME → tunnel $TUNNEL_NAME"
-    cloudflared tunnel route dns "$TUNNEL_NAME" "$SUBDOMAIN" 2>/dev/null || warn "DNS route may already exist"
+    cloudflared tunnel route dns "$TUNNEL_NAME" "$FULL_HOSTNAME" 2>/dev/null || warn "DNS route may already exist"
     success "DNS routed: $FULL_HOSTNAME"
 
     # Write config.yml
     CONFIG_DIR="$HOME/.cloudflared"
-    CRED_FILE=$(ls "${CONFIG_DIR}/${TUNNEL_ID}.json" 2>/dev/null)
+    CRED_FILE=$(ls "${CONFIG_DIR}/${TUNNEL_ID}.json" 2>/dev/null || echo "")
     if [ -z "$CRED_FILE" ]; then
       CRED_FILE="${CONFIG_DIR}/${TUNNEL_ID}.json"
     fi
@@ -330,13 +334,24 @@ EOF
     success "config.yml written"
     add_rollback "rm -f ${CONFIG_DIR}/config.yml"
 
-    # Install as service
+    # Install as service (with proper error handling)
     info "Installing cloudflared as system service..."
     if command -v systemctl &>/dev/null; then
-      sudo cloudflared service install 2>/dev/null || warn "Service may already be installed"
-      sudo systemctl enable cloudflared 2>/dev/null
-      sudo systemctl restart cloudflared 2>/dev/null
-      success "cloudflared service installed & started"
+      # Uninstall old service first (ignore errors)
+      sudo cloudflared service uninstall 2>/dev/null || true
+      # Install fresh
+      sudo cloudflared service install 2>/dev/null || true
+      sudo systemctl daemon-reload 2>/dev/null || true
+      sudo systemctl enable cloudflared 2>/dev/null || true
+      sudo systemctl restart cloudflared 2>/dev/null || true
+
+      # Verify service is running
+      sleep 2
+      if systemctl is-active --quiet cloudflared 2>/dev/null; then
+        success "cloudflared service installed & running"
+      else
+        warn "Service installed but not running. Start manually: sudo systemctl start cloudflared"
+      fi
       add_rollback "sudo cloudflared service uninstall 2>/dev/null"
     else
       warn "systemctl not found. Start tunnel manually: cloudflared tunnel run $TUNNEL_NAME"
@@ -344,8 +359,7 @@ EOF
 
     # Update .env with WEBHOOK_URL
     WEBHOOK_URL="https://${FULL_HOSTNAME}"
-    
-    # Add WEBHOOK_URL and WEBHOOK_PORT to .env
+
     if grep -q "^WEBHOOK_URL=" .env 2>/dev/null; then
       sed -i "s|^WEBHOOK_URL=.*|WEBHOOK_URL=${WEBHOOK_URL}|" .env
     else
