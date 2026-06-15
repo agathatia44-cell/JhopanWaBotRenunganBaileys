@@ -426,6 +426,7 @@ MIT License — Bebas digunakan dan dimodifikasi.
 
 ## 🙏 Credits
 
+- [JhopanStore](https://jhopanstore.my.id) — Infrastructure & AI API Provider
 - [Baileys](https://github.com/WhiskeySockets/Baileys) — WhatsApp Web API (lightweight, no Chromium)
 - [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api) — Telegram Bot API
 - [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/) — Free HTTPS tunnel
