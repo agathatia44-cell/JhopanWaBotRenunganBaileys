@@ -123,16 +123,32 @@ console.log(`
     // Show pool stats
     try {
       const versePool = require("./services/versePool");
-      const stats = await versePool.getPoolStats();
-      console.log(
-        `📖 Verse Pool: ${stats.used}/${stats.total} terpakai, ${stats.unused} tersisa (~${stats.estimatedYearsLeft} tahun)`
-      );
-      console.log(`   🎉 Special days: ${stats.specialDays} | Resets: ${stats.totalResets}`);
-      if (stats.todayTheme) {
-        console.log(`   🎨 Today theme: ${stats.todayTheme.theme} (${stats.todayTheme.reason || ""})`);
+      const { getVerseMode } = (() => {
+        // Quick mode check without importing renunganHandler
+        const mode = (process.env.VERSE_MODE || "pool").toLowerCase();
+        return { getVerseMode: () => mode === "yearly" ? "yearly" : "pool" };
+      })();
+      const mode = getVerseMode();
+
+      if (mode === "pool") {
+        const stats = await versePool.getPoolStats();
+        console.log(`📖 Verse mode: POOL`);
+        console.log(`   ${stats.used}/${stats.total} terpakai, ${stats.unused} tersisa (~${stats.estimatedYearsLeft} tahun)`);
+        console.log(`   🎉 Special days: ${stats.specialDays} | Resets: ${stats.totalResets}`);
+        if (stats.todayTheme) {
+          console.log(`   🎨 Today theme: ${stats.todayTheme.theme} (${stats.todayTheme.reason || ""})`);
+        }
+      } else {
+        const year = new Date().getFullYear();
+        const mongoData = require("./services/mongoDataService");
+        const data = await mongoData.loadVerses(year);
+        const used = (data.verses || []).filter(v => v.used).length;
+        const total = (data.verses || []).length;
+        console.log(`📖 Verse mode: YEARLY`);
+        console.log(`   ${year}: ${used}/${total} terpakai, ${total - used} tersisa`);
       }
     } catch (e) {
-      console.log("📖 Verse Pool: sedang dimuat...", e.message);
+      console.log("📖 Verses: sedang dimuat...", e.message);
     }
 
     const loadTime = ((Date.now() - startTime) / 1000).toFixed(2);
