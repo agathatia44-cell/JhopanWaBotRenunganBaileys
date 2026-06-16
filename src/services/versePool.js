@@ -570,16 +570,28 @@ function findSpecialDayVerse(specialDayVerses, key) {
 
 function getRelatedThemes(specialDayName) {
   const name = specialDayName.toLowerCase();
-  if (name.includes("natal")) return ["harapan", "kasih", "iman"];
-  if (name.includes("paskah")) return ["harapan", "iman", "kekuatan"];
+  if (name.includes("natal") || name.includes("malam natal")) return ["harapan", "kasih", "iman"];
+  if (name.includes("paskah") || name.includes("senin paskah")) return ["harapan", "iman", "kekuatan"];
   if (name.includes("jumat agung")) return ["kasih", "pertobatan", "iman"];
+  if (name.includes("kamis putih")) return ["kasih", "doa", "pertobatan"];
   if (name.includes("pentakosta")) return ["kekuatan", "iman", "doa"];
   if (name.includes("kenaikan")) return ["harapan", "iman"];
-  if (name.includes("tahun baru")) return ["harapan", "hikmat"];
+  if (name.includes("tritunggal")) return ["iman", "hikmat"];
+  if (name.includes("minggu palma")) return ["harapan", "iman"];
+  if (name.includes("rabu abu")) return ["pertobatan", "doa"];
+  if (name.includes("tahun baru") || name.includes("malam tahun")) return ["harapan", "hikmat"];
   if (name.includes("kemerdekaan")) return ["kekuatan", "harapan"];
   if (name.includes("kasih sayang")) return ["kasih"];
   if (name.includes("ibu")) return ["kasih", "hikmat"];
   if (name.includes("ayah")) return ["kekuatan", "hikmat"];
+  if (name.includes("reformasi")) return ["iman", "kekuatan"];
+  if (name.includes("pahlawan")) return ["kekuatan", "iman"];
+  if (name.includes("guru")) return ["hikmat", "pertumbuhan_rohani"];
+  if (name.includes("anak")) return ["kasih", "harapan"];
+  if (name.includes("orang kudus")) return ["iman", "harapan"];
+  if (name.includes("epifani")) return ["harapan", "iman"];
+  if (name.includes("adven")) return ["harapan", "doa"];
+  if (name.includes("pengucapan syukur") || name.includes("thanksgiving")) return ["harapan", "kasih"];
   return ["harapan", "kasih", "iman", "kekuatan"];
 }
 

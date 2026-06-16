@@ -484,15 +484,23 @@ async function checkSpecialDay() {
 
   // Daftar hari spesial (tanggal tetap)
   const specialDays = {
+    // Liturgi Gereja
     "25-12": "Hari Natal",
+    "24-12": "Malam Natal",
     "1-1": "Tahun Baru",
+    "6-1": "Epifani",
+    "31-12": "Malam Tahun Baru",
+    "1-11": "Hari Orang Kudus",
+    "31-10": "Hari Reformasi Gereja",
+    // Nasional + Kristen
     "17-8": "Hari Kemerdekaan Indonesia",
+    "10-11": "Hari Pahlawan",
+    "25-11": "Hari Guru",
+    "23-7": "Hari Anak Nasional",
+    // Keluarga
     "14-2": "Hari Kasih Sayang",
     "22-12": "Hari Ibu",
     "12-11": "Hari Ayah",
-    "31-12": "Malam Tahun Baru",
-    "6-1": "Epifani",
-    "1-11": "Hari Orang Kudus",
   };
 
   const dateKey = `${day}-${month}`;
@@ -540,6 +548,24 @@ async function checkSpecialDay() {
   if (today.isSame(easter.clone().subtract(7, "days"), "day")) {
     console.log("🎉 Hari spesial terdeteksi: Minggu Palma");
     return "Minggu Palma";
+  }
+
+  // Kamis Putih (3 hari sebelum Paskah)
+  if (today.isSame(easter.clone().subtract(3, "days"), "day")) {
+    console.log("🎉 Hari spesial terdeteksi: Kamis Putih");
+    return "Kamis Putih";
+  }
+
+  // Senin Paskah (1 hari setelah Paskah)
+  if (today.isSame(easter.clone().add(1, "days"), "day")) {
+    console.log("🎉 Hari spesial terdeteksi: Senin Paskah");
+    return "Senin Paskah";
+  }
+
+  // Minggu Tritunggal (7 hari setelah Pentakosta)
+  if (today.isSame(easter.clone().add(56, "days"), "day")) {
+    console.log("🎉 Hari spesial terdeteksi: Minggu Tritunggal Kudus");
+    return "Minggu Tritunggal Kudus";
   }
 
   return null;
