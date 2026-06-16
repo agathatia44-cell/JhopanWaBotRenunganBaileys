@@ -267,6 +267,62 @@ bot.onText(/\/testai/, async (msg) => {
   }
 });
 
+bot.onText(/\/pool/, async (msg) => {
+  const userId = msg.from.id;
+  const chatId = msg.chat.id;
+  if (!isAdmin(userId)) return denyAccess(chatId);
+
+  const versePool = require("./services/versePool");
+  const stats = await versePool.getPoolStats();
+
+  let text = `📖 *Verse Pool Status*\n\n`;
+  text += `Total: ${stats.total} ayat\n`;
+  text += `Terpakai: ${stats.used} (${stats.percentage}%)\n`;
+  text += `Tersisa: ${stats.unused}\n`;
+  text += `Estimasi: ~${stats.estimatedYearsLeft} tahun lagi\n`;
+  text += `Special days: ${stats.specialDays}\n`;
+  text += `Total resets: ${stats.totalResets}\n\n`;
+
+  if (stats.todayTheme) {
+    text += `🎨 *Theme Hari Ini*\n`;
+    text += `Tema: ${stats.todayTheme.theme}\n`;
+    text += `Alasan: ${stats.todayTheme.reason || "-"}\n`;
+    text += `${stats.todayTheme.isSpecial ? "🎉 Hari spesial!" : "📅 Hari biasa"}\n\n`;
+  }
+
+  if (stats.byCategory) {
+    text += `📊 *Per Kategori*\n`;
+    for (const [cat, data] of Object.entries(stats.byCategory)) {
+      text += `${cat}: ${data.used}/${data.total}\n`;
+    }
+  }
+
+  await safeSendMessage(chatId, text);
+});
+
+bot.onText(/\/seedpool/, async (msg) => {
+  const userId = msg.from.id;
+  const chatId = msg.chat.id;
+  if (!isAdmin(userId)) return denyAccess(chatId);
+
+  await safeSendMessage(chatId, "🌱 Seeding verse pool dari JSON files...");
+
+  const versePool = require("./services/versePool");
+  const result = await versePool.seedPoolFromFiles();
+
+  if (result.success) {
+    await safeSendMessage(
+      chatId,
+      `✅ *Pool Seeded!*\n\n` +
+        `Total: ${result.totalVerses} ayat\n` +
+        `Tahun: ${result.years.join(", ")}\n` +
+        `Special days: ${result.specialDays}`,
+    );
+  } else {
+    await safeSendMessage(chatId, `❌ Seed gagal: ${result.error}`);
+  }
+});
+
 // ============================================
 // CALLBACK HANDLERS
 // ============================================

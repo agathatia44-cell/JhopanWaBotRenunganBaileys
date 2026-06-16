@@ -11,132 +11,84 @@ const moment = require("moment-timezone");
 const { generateRenungan, checkSpecialDay } = require("./services/aiService");
 const wa = require("./botWhatsApp");
 const { loadConfig } = require("./utils/configManager");
-const mongoData = require("./services/mongoDataService");
+const versePool = require("./services/versePool");
 
 moment.tz.setDefault(process.env.TIMEZONE || "Asia/Makassar");
 
 // Cron job instance
 let renunganCronJob = null;
+let themePrecomputeJob = null;
 
 /**
- * Load verses data untuk tahun tertentu
- * MongoDB → file → empty
- */
-async function loadVerses(year = null) {
-  try {
-    return await mongoData.loadVerses(year);
-  } catch (error) {
-    console.error("❌ Error load verses:", error.message);
-    return { verses: [], specialDayVerses: {}, metadata: {} };
-  }
-}
-
-/**
- * Save verses data untuk tahun tertentu
- * MongoDB → file
- */
-async function saveVerses(data, year = null) {
-  try {
-    await mongoData.saveVerses(data, year);
-  } catch (error) {
-    console.error("❌ Error save verses:", error.message);
-  }
-}
-
-/**
- * Get ayat untuk hari ini
- * Sistem random dengan history: ayat yang sudah terpakai tidak akan diulang
- * Prioritas: Hari spesial > Random dari ayat yang belum terpakai
+ * Get ayat untuk hari ini (dari unified pool)
+ * Menggunakan pre-computed theme + verse pool
  */
 async function getVerseForToday() {
-  const currentYear = new Date().getFullYear();
-  const versesData = await loadVerses(currentYear);
+  // 1. Get pre-computed theme
+  const todayTheme = await versePool.getTodayTheme();
 
-  if (!versesData.verses || versesData.verses.length === 0) {
-    console.error(`❌ Tidak ada data verses untuk tahun ${currentYear}`);
+  let theme = "umum";
+  let specialDay = null;
+  let isSpecial = false;
+
+  if (todayTheme) {
+    theme = todayTheme.theme || "umum";
+    if (todayTheme.isSpecial) {
+      specialDay = todayTheme.specialDayName || todayTheme.theme;
+      isSpecial = true;
+    }
+    console.log(`🎨 Theme: ${theme} (${todayTheme.reason || ""})`);
+  } else {
+    // No pre-computed theme, use fallback
+    const dayOfWeek = moment().day();
+    theme = versePool.DAILY_THEMES[dayOfWeek] || "umum";
+
+    // Also check special day
+    const sd = await checkSpecialDay();
+    if (sd) {
+      specialDay = sd;
+      isSpecial = true;
+    }
+    console.log(`📅 Fallback theme: ${theme}`);
+  }
+
+  // 2. Get verses from pool based on theme
+  const result = await versePool.getVersesForToday(
+    theme,
+    isSpecial ? { name: specialDay } : null
+  );
+
+  if (!result.verses || result.verses.length === 0) {
+    console.error("❌ No verses available!");
     return { verseRef: "Mazmur 119:105", specialDay: null, isSpecial: false };
   }
 
-  // 1. Cek apakah hari spesial
-  const specialDay = await checkSpecialDay();
-
-  if (specialDay) {
-    // Cari ayat khusus untuk hari spesial
-    const specialKey = specialDay
-      .toLowerCase()
-      .replace(/\s+/g, "_")
-      .replace(/hari_/g, "");
-
-    // Cek di specialDayVerses
-    for (const [key, verseRef] of Object.entries(
-      versesData.specialDayVerses || {},
-    )) {
-      if (specialKey.includes(key) || key.includes(specialKey)) {
-        return { verseRef, specialDay, isSpecial: true };
-      }
-    }
-  }
-
-  // 2. Pilih random dari ayat yang belum terpakai
-  let unusedVerses = versesData.verses.filter((v) => !v.used);
-
-  // 3. Jika semua sudah dipakai, reset otomatis
-  if (unusedVerses.length === 0) {
-    console.log("🔄 Semua ayat sudah dipakai, auto-reset...");
-    versesData.verses.forEach((v) => {
-      v.used = false;
-    });
-    await saveVerses(versesData, currentYear);
-    unusedVerses = versesData.verses;
-  }
-
-  // 4. Pilih random dari yang belum dipakai
-  const randomIndex = Math.floor(Math.random() * unusedVerses.length);
-  const selectedVerse = unusedVerses[randomIndex];
-
-  // 5. Mark as used dan simpan
-  const idx = versesData.verses.findIndex((v) => v.id === selectedVerse.id);
-  if (idx !== -1) {
-    versesData.verses[idx].used = true;
-    await saveVerses(versesData, currentYear);
-  }
+  // 3. Join verse refs for AI (e.g., "Mazmur 23:1; Roma 8:28")
+  const verseRefs = result.verses.map((v) => v.verse).join("; ");
+  const verseUids = result.verses.map((v) => v._uid);
 
   console.log(
-    `📖 Verse dipilih: ${selectedVerse.verse} (${
-      unusedVerses.length - 1
-    } tersisa)`,
+    `📖 Verse(s): ${verseRefs} (${result.verses.length} ayat, tema: ${result.theme})`
   );
 
   return {
-    verseRef: selectedVerse.verse,
+    verseRef: verseRefs,
+    verseUids,
     specialDay,
-    isSpecial: !!specialDay,
-    category: selectedVerse.category,
+    isSpecial,
+    theme: result.theme,
+    verseCount: result.verses.length,
   };
 }
 
 /**
- * Reset semua ayat (mark as unused)
+ * Reset semua ayat (mark as unused) - pool version
  */
-async function resetVerses(year = null) {
-  const currentYear = year || new Date().getFullYear();
-  const versesData = await loadVerses(currentYear);
-
-  if (!versesData.verses || versesData.verses.length === 0) {
-    return { success: false, error: "Tidak ada data verses" };
-  }
-
-  versesData.verses.forEach((v) => {
-    v.used = false;
-  });
-
-  await saveVerses(versesData, currentYear);
-
-  return {
-    success: true,
-    total: versesData.verses.length,
-    year: currentYear,
-  };
+async function resetVerses() {
+  const result = await versePool.resetPool();
+  if (!result) return { success: false, error: "Reset failed" };
+  const stats = await versePool.getPoolStats();
+  return { success: true, total: stats.total };
 }
 
 /**
@@ -181,13 +133,13 @@ async function sendRenungan(isRetry = false) {
     );
 
     // Get referensi ayat hari ini
-    const { verseRef, specialDay, isSpecial } = await getVerseForToday();
+    const { verseRef, verseUids, specialDay, isSpecial, theme, verseCount } = await getVerseForToday();
 
     if (isSpecial) {
       console.log(`🎉 Hari spesial: ${specialDay}`);
     }
 
-    console.log(`📖 Ayat: ${verseRef}`);
+    console.log(`📖 Ayat (${verseCount || 1}): ${verseRef}`);
 
     // AI generate seluruh isi renungan (termasuk cari isi ayat)
     const message = await generateRenungan(verseRef, specialDay);
@@ -202,7 +154,7 @@ async function sendRenungan(isRetry = false) {
         await telegram.notifyAdminError(
           `❌ AI Error saat generate renungan\nAyat: ${verseRef}\nHari: ${
             specialDay || "Normal"
-          }`,
+          }\nTema: ${theme || "-"}`,
         );
       }
 
@@ -265,10 +217,17 @@ async function sendRenungan(isRetry = false) {
 
     console.log(`✅ Renungan terkirim ke ${groupId}`);
 
+    // Mark verses as used in pool
+    if (verseUids && verseUids.length > 0) {
+      await versePool.markVersesUsed(verseUids, groupId);
+    }
+
     return {
       success: true,
       verse: verseRef,
       specialDay,
+      theme,
+      verseCount: verseCount || 1,
       groupId,
       isRetry,
     };
@@ -414,84 +373,81 @@ async function sendRenunganWithMessage(message) {
 }
 
 /**
- * Tambah ayat baru ke database (hanya referensi)
+ * Tambah ayat baru ke pool
  */
 async function addVerse(verseRef, category = "umum") {
   try {
-    const versesData = await loadVerses();
+    const pool = await versePool.loadPool();
+    if (!pool) return { success: false, error: "Pool not loaded" };
 
     // Check duplicate
-    const exists = versesData.verses.some(
+    const exists = pool.verses.some(
       (v) => v.verse.toLowerCase() === verseRef.toLowerCase(),
     );
 
     if (exists) {
-      return { success: false, error: "Ayat sudah ada di database" };
+      return { success: false, error: "Ayat sudah ada di pool" };
     }
 
     // Generate new ID
-    const maxId = Math.max(...versesData.verses.map((v) => v.id), 0);
+    const maxId = Math.max(...pool.verses.map((v) => v.id || 0), 0);
+    const newId = maxId + 1;
 
-    versesData.verses.push({
-      id: maxId + 1,
+    pool.verses.push({
+      id: newId,
+      _uid: `custom_${newId}`,
       verse: verseRef,
       category,
       used: false,
+      sourceYear: "custom",
+      sentAt: null,
+      sentTo: null,
     });
 
-    await saveVerses(versesData);
+    pool.metadata.totalVerses = pool.verses.length;
+    pool.metadata.unusedCount = pool.verses.filter((v) => !v.used).length;
 
-    console.log(`✅ Ayat baru ditambahkan: ${verseRef}`);
-    return { success: true, id: maxId + 1 };
+    await versePool.savePool(pool);
+
+    console.log(`✅ Ayat baru ditambahkan ke pool: ${verseRef}`);
+    return { success: true, id: newId };
   } catch (error) {
     return { success: false, error: error.message };
   }
 }
 
 /**
- * Get semua ayat
+ * Get semua ayat (dari pool)
  */
 async function getAllVerses() {
-  const versesData = await loadVerses();
-  return versesData.verses;
+  const pool = await versePool.loadPool();
+  return pool ? pool.verses : [];
 }
 
 /**
- * Get statistik ayat
+ * Get statistik ayat (dari pool)
  */
 async function getVersesStats() {
-  const versesData = await loadVerses();
-  const total = versesData.verses.length;
-  const used = versesData.verses.filter((v) => v.used).length;
-  const unused = total - used;
-  const specialDays = Object.keys(versesData.specialDayVerses || {}).length;
-
-  return {
-    year: versesData.year || new Date().getFullYear(),
-    total,
-    used,
-    unused,
-    specialDays,
-    specialDayVerses: versesData.specialDayVerses || {},
-    lastUpdated: versesData.metadata?.lastUpdated,
-  };
+  return versePool.getPoolStats();
 }
 
 /**
- * Hapus ayat dari database
+ * Hapus ayat dari pool
  */
 async function deleteVerse(id) {
   try {
-    const versesData = await loadVerses();
-    const idx = versesData.verses.findIndex((v) => v.id === id);
+    const pool = await versePool.loadPool();
+    if (!pool) return { success: false, error: "Pool not loaded" };
 
-    if (idx === -1) {
-      return { success: false, error: "Ayat tidak ditemukan" };
-    }
+    const idx = pool.verses.findIndex((v) => v.id === id || v._uid === String(id));
+    if (idx === -1) return { success: false, error: "Ayat tidak ditemukan" };
 
-    const deleted = versesData.verses.splice(idx, 1)[0];
-    await saveVerses(versesData);
+    const deleted = pool.verses.splice(idx, 1)[0];
+    pool.metadata.totalVerses = pool.verses.length;
+    pool.metadata.unusedCount = pool.verses.filter((v) => !v.used).length;
+    pool.metadata.usedCount = pool.verses.length - pool.metadata.unusedCount;
 
+    await versePool.savePool(pool);
     return { success: true, deleted };
   } catch (error) {
     return { success: false, error: error.message };
@@ -499,15 +455,11 @@ async function deleteVerse(id) {
 }
 
 /**
- * Reset semua status used
+ * Reset pool (semua ayat → unused)
  */
 async function resetVersesStatus() {
   try {
-    const versesData = await loadVerses();
-    versesData.verses.forEach((v) => {
-      v.used = false;
-    });
-    await saveVerses(versesData);
+    await versePool.resetPool();
     return { success: true };
   } catch (error) {
     return { success: false, error: error.message };
@@ -524,12 +476,37 @@ function startRenunganScheduler() {
   // Schedule: menit jam * * * (setiap hari)
   const cronExpression = `${minute} ${hour} * * *`;
 
-  // Stop existing job jika ada
+  // Stop existing jobs
   if (renunganCronJob) {
     renunganCronJob.stop();
     console.log("🔄 Menghentikan scheduler renungan lama...");
   }
+  if (themePrecomputeJob) {
+    themePrecomputeJob.stop();
+  }
 
+  // ── Theme pre-compute: 30 menit sebelum renungan ──
+  const precomputeMinutes = parseInt(process.env.THEME_PRECOMPUTE_MINUTES) || 30;
+  let precomputeHour = parseInt(hour) - (precomputeMinutes >= 60 ? Math.floor(precomputeMinutes / 60) : 0);
+  let precomputeMin = (parseInt(minute) - (precomputeMinutes % 60) + 60) % 60;
+  if (precomputeHour < 0) precomputeHour += 24;
+
+  const precomputeCron = `${precomputeMin} ${precomputeHour} * * *`;
+
+  themePrecomputeJob = cron.schedule(
+    precomputeCron,
+    async () => {
+      console.log(`\n🎨 Pre-compute theme (${moment().format("HH:mm")})...`);
+      try {
+        await versePool.precomputeTheme();
+      } catch (e) {
+        console.error("❌ Theme pre-compute failed:", e.message);
+      }
+    },
+    { timezone: process.env.TIMEZONE || "Asia/Makassar" },
+  );
+
+  // ── Renungan cron ──
   renunganCronJob = cron.schedule(
     cronExpression,
     async () => {
@@ -539,6 +516,10 @@ function startRenunganScheduler() {
     { timezone: process.env.TIMEZONE || "Asia/Makassar" },
   );
 
+  const precomputeTime = `${String(precomputeHour).padStart(2, "0")}:${String(precomputeMin).padStart(2, "0")}`;
+  console.log(
+    `🎨 Theme pre-compute dijadwalkan jam ${precomputeTime} (${precomputeMinutes} menit sebelum renungan)`,
+  );
   console.log(
     `📖 Renungan harian dijadwalkan jam ${renunganTime} ${
       process.env.TIMEZONE || "WITA"

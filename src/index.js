@@ -120,15 +120,19 @@ console.log(`
     console.log("⏰ Mengatur jadwal renungan...");
     startRenunganScheduler();
 
-    // Show verse status
+    // Show pool stats
     try {
-      const { getVersesStats } = require("./renunganHandler");
-      const stats = await getVersesStats();
+      const versePool = require("./services/versePool");
+      const stats = await versePool.getPoolStats();
       console.log(
-        `📖 Verses ${new Date().getFullYear()}: ${stats.used}/${stats.total} terpakai, ${stats.unused} tersisa`
+        `📖 Verse Pool: ${stats.used}/${stats.total} terpakai, ${stats.unused} tersisa (~${stats.estimatedYearsLeft} tahun)`
       );
+      console.log(`   🎉 Special days: ${stats.specialDays} | Resets: ${stats.totalResets}`);
+      if (stats.todayTheme) {
+        console.log(`   🎨 Today theme: ${stats.todayTheme.theme} (${stats.todayTheme.reason || ""})`);
+      }
     } catch (e) {
-      console.log("📖 Verses: belum tersedia");
+      console.log("📖 Verse Pool: sedang dimuat...", e.message);
     }
 
     const loadTime = ((Date.now() - startTime) / 1000).toFixed(2);
