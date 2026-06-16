@@ -120,6 +120,17 @@ console.log(`
     console.log("⏰ Mengatur jadwal renungan...");
     startRenunganScheduler();
 
+    // Show verse status
+    try {
+      const { getVersesStats } = require("./renunganHandler");
+      const stats = await getVersesStats();
+      console.log(
+        `📖 Verses ${new Date().getFullYear()}: ${stats.used}/${stats.total} terpakai, ${stats.unused} tersisa`
+      );
+    } catch (e) {
+      console.log("📖 Verses: belum tersedia");
+    }
+
     const loadTime = ((Date.now() - startTime) / 1000).toFixed(2);
 
     console.log("─".repeat(50));

@@ -464,12 +464,16 @@ async function getVersesStats() {
   const total = versesData.verses.length;
   const used = versesData.verses.filter((v) => v.used).length;
   const unused = total - used;
+  const specialDays = Object.keys(versesData.specialDayVerses || {}).length;
 
   return {
+    year: versesData.year || new Date().getFullYear(),
     total,
     used,
     unused,
-    lastUpdated: versesData.metadata.lastUpdated,
+    specialDays,
+    specialDayVerses: versesData.specialDayVerses || {},
+    lastUpdated: versesData.metadata?.lastUpdated,
   };
 }
 
