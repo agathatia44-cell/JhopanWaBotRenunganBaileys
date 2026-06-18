@@ -229,7 +229,28 @@ async function getVersesForToday(theme, specialDay = null) {
         isSpecialVerse: true,
       });
     }
-    // Cukup 1 ayat spesial saja (bisa berupa range seperti "Lukas 2:10-14")
+
+    // Tambah 1-2 range ayat dari kitab + pasal yang SAMA
+    if (specialVerseRef) {
+      const specialMatch = specialVerseRef.match(/^(.+?)\s+(\d+):/);
+      const specialBook = specialMatch ? specialMatch[1] : "";
+      const specialChapter = specialMatch ? parseInt(specialMatch[2]) : 0;
+
+      // Cari ayat pool dari kitab + pasal yang sama + tema terkait
+      const relatedThemes = getRelatedThemes(specialDay.name);
+      const sameBookChapter = pool.verses.filter((v) => {
+        if (v.used) return false;
+        if (!relatedThemes.includes(v.category)) return false;
+        const m = v.verse.match(/^(.+?)\s+(\d+):/);
+        return m && m[1] === specialBook && parseInt(m[2]) === specialChapter;
+      });
+
+      shuffleArray(sameBookChapter);
+      const extraCount = Math.min(sameBookChapter.length, 2);
+      for (let i = 0; i < extraCount; i++) {
+        selectedVerses.push(sameBookChapter[i]);
+      }
+    }
 
     return {
       verses: selectedVerses.slice(0, 3), // max 3
