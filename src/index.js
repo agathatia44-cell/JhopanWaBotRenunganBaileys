@@ -18,6 +18,7 @@ const { initWhatsApp } = require("./botWhatsApp");
 const { startRenunganScheduler } = require("./renunganHandler");
 const { loadConfig } = require("./utils/configManager");
 const mongoService = require("./services/mongoService");
+const bibleScrapeScheduler = require("./services/bibleScrapeScheduler");
 
 // Banner
 const botMode = process.env.WEBHOOK_URL ? "WEBHOOK" : "POLLING";
@@ -151,6 +152,13 @@ console.log(`
       console.log("📖 Verses: sedang dimuat...", e.message);
     }
 
+    // 4. Start Bible Scrape Scheduler (1 kitab/jam, pause 07-09)
+    if (mongoService.isConnected()) {
+      bibleScrapeScheduler.startScheduler();
+    } else {
+      console.log("⚠️  Bible scraper tidak dimulai (MongoDB tidak terhubung)");
+    }
+
     const loadTime = ((Date.now() - startTime) / 1000).toFixed(2);
 
     console.log("─".repeat(50));
@@ -193,6 +201,13 @@ console.log(`
     // Cleanup webhook jika pakai webhook mode
     try {
       await cleanupWebhook();
+    } catch (e) {
+      // Ignore cleanup errors
+    }
+
+    // Stop Bible Scraper Scheduler
+    try {
+      bibleScrapeScheduler.stopScheduler();
     } catch (e) {
       // Ignore cleanup errors
     }

@@ -17,6 +17,9 @@ const wa = require("./botWhatsApp");
 const { loadConfig } = require("./utils/configManager");
 const versePool = require("./services/versePool");
 const mongoData = require("./services/mongoDataService");
+const bibleVerseDB = require("./services/bibleVerseDB");
+const bibleScraper = require("./services/bibleScrapeScheduler");
+const mongoService = require("./services/mongoService");
 
 moment.tz.setDefault(process.env.TIMEZONE || "Asia/Makassar");
 
@@ -190,8 +193,39 @@ async function sendRenungan(isRetry = false) {
 
     console.log(`📖 Ayat (${verseCount || 1}): ${verseRef}`);
 
-    // AI generate seluruh isi renungan (termasuk cari isi ayat)
-    const message = await generateRenungan(verseRef, specialDay);
+    // ===== VERSE INJECT: Ambil teks ayat dari database =====
+    let verseData = null;
+    if (mongoService.isConnected()) {
+      try {
+        // verseRef bisa multi-ayat: "Roma 8:28; Roma 8:30" atau "Roma 8:28, Roma 8:30"
+        const refs = verseRef.split(/[;,]/).map(r => r.trim()).filter(Boolean);
+        const verseDatas = [];
+
+        for (const ref of refs) {
+          let vd = await bibleVerseDB.getVerse(ref);
+          if (!vd) {
+            console.log(`   ⚠️  ${ref} belum ada di DB, scraping on-demand...`);
+            vd = await bibleScraper.scrapeVerseOnDemand(ref);
+          }
+          if (vd) verseDatas.push(vd);
+        }
+
+        if (verseDatas.length > 0) {
+          // Gabungkan untuk multi-ayat
+          verseData = {
+            text: verseDatas.map(v => v.text).join(' '),
+            pericope: verseDatas[0].pericope, // pakai perikop ayat pertama
+          };
+          console.log(`   ✅ ${verseDatas.length} ayat ditemukan di DB`);
+        }
+      } catch (err) {
+        console.log(`   ⚠️  Gagal ambil verse text: ${err.message}`);
+        // Fallback ke mode lama (AI harus ingat ayat sendiri)
+      }
+    }
+
+    // AI generate renungan (dengan verse text jika tersedia)
+    const message = await generateRenungan(verseRef, specialDay, verseData);
 
     // Jika AI error, kirim notifikasi ke Telegram saja
     if (!message || message.includes("Error") || message.includes("Maaf")) {
@@ -318,8 +352,30 @@ async function previewRenungan() {
 
     console.log(`📖 Preview ayat: ${verseRef} (${verseCount || 1} ayat, tema: ${theme || "-"})`);
 
-    // AI generate seluruh isi renungan
-    const message = await generateRenungan(verseRef, specialDay);
+    // ===== VERSE INJECT: Ambil teks ayat dari database =====
+    let verseData = null;
+    if (mongoService.isConnected()) {
+      try {
+        const refs = verseRef.split(/[;,]/).map(r => r.trim()).filter(Boolean);
+        const verseDatas = [];
+        for (const ref of refs) {
+          let vd = await bibleVerseDB.getVerse(ref);
+          if (!vd) vd = await bibleScraper.scrapeVerseOnDemand(ref);
+          if (vd) verseDatas.push(vd);
+        }
+        if (verseDatas.length > 0) {
+          verseData = {
+            text: verseDatas.map(v => v.text).join(' '),
+            pericope: verseDatas[0].pericope,
+          };
+        }
+      } catch (err) {
+        console.log(`   ⚠️  Gagal ambil verse text: ${err.message}`);
+      }
+    }
+
+    // AI generate renungan
+    const message = await generateRenungan(verseRef, specialDay, verseData);
 
     return {
       success: true,

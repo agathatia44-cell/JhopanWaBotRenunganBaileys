@@ -2,16 +2,18 @@
 
 # 🤖 JhopanWa Bot Renungan
 
-### WhatsApp & Telegram Bot untuk Renungan Harian dengan AI
+### WhatsApp & Telegram Bot untuk Renungan Harian Kristen dengan AI
 
 **Powered by Baileys — Tanpa Chromium, Ultra Ringan, Jalan di Mana Saja**
 
 [![Node.js](https://img.shields.io/badge/Node.js-20%2B-green?logo=node.js)](https://nodejs.org/)
 [![Baileys](https://img.shields.io/badge/Baileys-8.x-blue?logo=whatsapp)](https://github.com/WhiskeySockets/Baileys)
-[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Multi--OS-orange)](#-supported-platforms)
+[![MongoDB](https://img.shields.io/badge/MongoDB-7.x-green?logo=mongodb)](https://www.mongodb.com/)
+[![Gemini AI](https://img.shields.io/badge/AI-Gemini%20Flash--Lite-yellow?logo=google)](https://ai.google.dev/)
+[![License](https://img.shields.io/badge/License-MIT-orange)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Multi--OS-lightgrey)](#-supported-platforms)
 
-**[🚀 Quick Start](#-quick-start)** • **[📖 Features](#-features)** • **[🌐 Deployment](#-deployment)** • **[📚 Docs](#-commands)**
+**[🚀 Quick Start](#-quick-start)** • **[✨ Features](#-features)** • **[📖 Bible Scrape System](#-bible-scrape-system)** • **[🏗️ Architecture](#️-architecture)** • **[📚 Docs](#-commands)**
 
 </div>
 
@@ -19,7 +21,7 @@
 
 ## 🌟 Highlights
 
-> **Bot WhatsApp + Telegram yang super ringan, bisa jalan di mana saja — dari VPS murah, GCP free tier, router OpenWRT, hingga HP Android pakai Termux!**
+> **Bot WhatsApp + Telegram yang super ringan dengan sistem scraping Alkitab otomatis dan AI-powered renungan — bisa jalan di mana saja, dari VPS murah, GCP free tier, router OpenWRT, hingga HP Android pakai Termux!**
 
 | Metric | Value |
 |--------|-------|
@@ -27,6 +29,8 @@
 | ⚡ CPU Usage | < 1% |
 | 🚀 Startup Time | 2-5 detik |
 | 💾 Disk Size | ~10 MB (no browser!) |
+| 📖 Bible Database | 31,102 ayat (~15 MB di MongoDB) |
+| 🤖 AI Generation | ~5 detik per renungan |
 | 📡 Bandwidth (Webhook) | ~1 MB/bulan |
 | 📡 Bandwidth (Polling) | ~750 MB/bulan |
 | 🖥️ Min. RAM | 256 MB |
@@ -35,8 +39,24 @@
 
 ## ✨ Features
 
-### 📖 Renungan Harian Otomatis
-AI generate renungan berdasarkan ayat Alkitab, dikirim otomatis setiap pagi ke grup WhatsApp & Telegram.
+### 📖 Renungan Harian Otomatis dengan AI
+AI generate renungan berdasarkan ayat Alkitab dengan **Prompt V4** — sistem message + verse text injection yang menghasilkan renungan berkualitas tinggi, context-aware, dan bebas halusinasi.
+
+- ✅ Teks ayat **PASTI akurat** (dari database, bukan AI hallucinate)
+- ✅ Perikop sebagai konteks tema renungan
+- ✅ Paragraf context-aware (terkait pesan ayat, bukan generic)
+- ✅ Bahasa sederhana & mudah dipahami mahasiswa
+- ✅ Support hari spesial (Natal, Paskah, Jumat Agung, dll)
+
+### 📖 Bible Scrape System (BARU!)
+Sistem scraping otomatis seluruh Alkitab Terjemahan Baru (31,102 ayat) dari [alkitab.mobi](https://alkitab.mobi):
+
+- 🕐 **1 kitab/jam** — scraping terjadwal agar tidak terdeteksi sebagai bot
+- 🛡️ **3 Layer Protection** — memastikan 100% ayat berhasil di-scrape
+- ⏸️ **Smart Pause** — berhenti scraping jam 07:00-09:00 (waktu renungan)
+- 🔍 **On-demand Scrape** — ayat yang belum ada di DB langsung di-scrape saat renungan
+- 💾 **MongoDB Storage** — data persisten, survive restart
+- 🎯 **One-cycle Stop** — setelah 1 siklus selesai (~3 hari), scraper berhenti permanen
 
 ### 🤖 Dual Bot
 WhatsApp (Baileys) + Telegram berjalan bersamaan dalam satu proses.
@@ -45,24 +65,80 @@ WhatsApp (Baileys) + Telegram berjalan bersamaan dalam satu proses.
 Otomatis kirim ucapan selamat ulang tahun ke member grup.
 
 ### 🌐 Multi-Group Support
-Kirim renungan ke beberapa grup dengan delay antar grup.
+Kirim renungan ke beberapa grup dengan delay antar grup (1-10 menit).
 
 ### ⚙️ Panel Kontrol Telegram
 Kelola semua setting bot dari Telegram:
 - Set grup tujuan renungan
-- Ubah jadwal pengiriman
-- Test kirim renungan
-- Kelola daftar ayat
+- Ubah jadwal pengiriman (06:00 - 10:00)
+- Preview & kirim renungan manual
+- Kelola daftar ayat (filter kategori, paginate, delete)
+- Multi-group management
+- Hide-tag (invisible mention)
 - Monitor status bot
 
 ### 🧠 AI-Powered
-Support multiple AI providers:
+Support multiple AI providers dengan **API Key Rotation** (multiple keys per provider):
 - Custom OpenAI-compatible API
-- Google Gemini
+- Google Gemini (default: Flash-Lite)
 - OpenRouter
 
 ### 💾 Ultra Lightweight
 Menggunakan **Baileys** (WhatsApp Web API) — **tanpa Chromium**, hemat RAM, startup cepat.
+
+---
+
+## 📖 Bible Scrape System
+
+Sistem scraping Alkitab TB (31,102 ayat) yang **guaranteed complete** dengan 3 layer protection.
+
+### Cara Kerja
+
+```
+BOT STARTUP
+  │
+  ├── 1. Connect MongoDB
+  ├── 2. Start WhatsApp + Telegram
+  ├── 3. Start Renungan Scheduler (jam 08:00)
+  └── 4. Start Bible Scrape Scheduler
+         │
+         ├── Jam 00:00 → Scrape Kejadian (50 pasal)
+         ├── Jam 01:00 → Scrape Keluaran (40 pasal)
+         ├── Jam 02:00 → Scrape Imamat (27 pasal)
+         ├── ...
+         ├── ⏸️  Jam 07:00 → PAUSE (waktu renungan)
+         ├── 📖 Jam 08:00 → RENUNGAN (pakai ayat dari DB)
+         ├── ▶️  Jam 09:00 → RESUME scraping
+         ├── ...
+         ├── ~Hari 3   → Wahyu selesai → VERIFIKASI FINAL
+         └── ✅ STOP (data sudah 100% lengkap)
+```
+
+### 3 Layer Protection
+
+| Layer | Kapan | Retry | Delay |
+|-------|-------|-------|-------|
+| **Layer 1** | Saat scraping pasal | 3 attempt | 2s, 4s, 6s |
+| **Layer 2** | Setelah 1 kitab selesai | 1 attempt/pasal | 5s + 3s/pasal |
+| **Layer 3** | Setelah 66 kitab selesai | 2 batch | 2s + 10s wait + 5s |
+
+**Total: hingga 6 attempt per pasal** — peluang gagal 6x berturut-turut sangat kecil.
+
+### Storage
+
+```
+31,102 ayat × 325 bytes = 9.6 MB
+MongoDB overhead:        ~14.5 MB
+Free tier 512 MB:        AMAN! (pakai 2.8%)
+```
+
+### Verse Injection (Prompt V4)
+
+Saat generate renungan:
+1. Cek ayat di database → ada? → inject ke prompt AI
+2. Belum ada? → scrape on-demand → simpan → inject
+3. AI fokus **menulis renungan** (bukan mengingat ayat)
+4. Hasil: **akurat, context-aware, tidak hallucinate**
 
 ---
 
@@ -84,8 +160,8 @@ Menggunakan **Baileys** (WhatsApp Web API) — **tanpa Chromium**, hemat RAM, st
 ### One Command to Rule Them All
 
 ```bash
-git clone https://github.com/jhopan/JhopanWaBotRenunganBaileys.git
-cd JhopanWaBotRenunganBaileys
+git clone https://github.com/jhopan/JhopanWaBotRenungan.git
+cd JhopanWaBotRenungan
 bash setup.sh  # Auto-detect platform!
 ```
 
@@ -95,8 +171,8 @@ bash setup.sh  # Auto-detect platform!
 <summary><b>🐧 Linux VPS / Server</b></summary>
 
 ```bash
-git clone https://github.com/jhopan/JhopanWaBotRenunganBaileys.git
-cd JhopanWaBotRenunganBaileys
+git clone https://github.com/jhopan/JhopanWaBotRenungan.git
+cd JhopanWaBotRenungan
 bash setup-vps.sh
 ```
 
@@ -108,8 +184,8 @@ bash setup-vps.sh
 <summary><b>☁️ Google Cloud Platform (GCP)</b></summary>
 
 ```bash
-git clone https://github.com/jhopan/JhopanWaBotRenunganBaileys.git
-cd JhopanWaBotRenunganBaileys
+git clone https://github.com/jhopan/JhopanWaBotRenungan.git
+cd JhopanWaBotRenungan
 bash setup-gcp.sh
 ```
 
@@ -123,8 +199,8 @@ bash setup-gcp.sh
 
 ```bash
 pkg install git
-git clone https://github.com/jhopan/JhopanWaBotRenunganBaileys.git
-cd JhopanWaBotRenunganBaileys
+git clone https://github.com/jhopan/JhopanWaBotRenungan.git
+cd JhopanWaBotRenungan
 bash setup-termux.sh
 ```
 
@@ -138,8 +214,8 @@ bash setup-termux.sh
 ```bash
 # SSH ke router
 opkg install git git-http
-git clone https://github.com/jhopan/JhopanWaBotRenunganBaileys.git
-cd JhopanWaBotRenunganBaileys
+git clone https://github.com/jhopan/JhopanWaBotRenungan.git
+cd JhopanWaBotRenungan
 sh setup-openwrt.sh
 ```
 
@@ -151,8 +227,8 @@ sh setup-openwrt.sh
 <summary><b>🍎 macOS</b></summary>
 
 ```bash
-git clone https://github.com/jhopan/JhopanWaBotRenunganBaileys.git
-cd JhopanWaBotRenunganBaileys
+git clone https://github.com/jhopan/JhopanWaBotRenungan.git
+cd JhopanWaBotRenungan
 bash setup-macos.sh
 ```
 
@@ -164,8 +240,8 @@ bash setup-macos.sh
 <summary><b>🪟 Windows</b></summary>
 
 ```cmd
-git clone https://github.com/jhopan/JhopanWaBotRenunganBaileys.git
-cd JhopanWaBotRenunganBaileys
+git clone https://github.com/jhopan/JhopanWaBotRenungan.git
+cd JhopanWaBotRenungan
 setup.bat
 ```
 
@@ -176,8 +252,8 @@ setup.bat
 ### Manual Setup
 
 ```bash
-git clone https://github.com/jhopan/JhopanWaBotRenunganBaileys.git
-cd JhopanWaBotRenunganBaileys
+git clone https://github.com/jhopan/JhopanWaBotRenungan.git
+cd JhopanWaBotRenungan
 npm install
 cp .env.example .env
 # Edit .env dengan credentials kamu
@@ -195,20 +271,26 @@ npm start
 TIMEZONE=Asia/Makassar
 
 # Telegram Bot (wajib)
-TELEGRAM_BOT_TOKEN=***_ADMIN_TELEGRAM_IDS=123456789
+TELEGRAM_BOT_TOKEN=***
+ADMIN_TELEGRAM_IDS=123456789
+
+# MongoDB (wajib untuk Bible Scrape System)
+MONGO_URI=mongodb+srv://user:***@cluster.mongodb.net/botdb
 
 # AI Provider (pilih salah satu)
 # Option A: Custom OpenAI-Compatible API
-AI_API_KEY=your_a***_API_ENDPOINT=https://your-api-endpoint.com/v1
+AI_API_KEY=***
+AI_API_ENDPOINT=https://your-api-endpoint.com/v1
 AI_MODEL=gemini/gemini-2.5-flash-lite
 
 # Option B: Google Gemini
-GEMINI_API_KEY=your_gem...y
+GEMINI_API_KEY=***
 
 # Option C: OpenRouter
-OPENROUTER_API_KEY=your_ope...n
+OPENROUTER_API_KEY=***
 
 # Renungan
+VERSE_MODE=pool          # "pool" atau "yearly"
 RENUNGAN_GROUP_ID=
 RENUNGAN_TIME=08:00
 
@@ -223,7 +305,8 @@ WEBHOOK_PORT=3000
 |------------|------------|
 | `TELEGRAM_BOT_TOKEN` | Chat [@BotFather](https://t.me/BotFather) → `/newbot` → copy token |
 | `ADMIN_TELEGRAM_IDS` | Chat [@userinfobot](https://t.me/userinfobot) → copy ID |
-| `AI_API_KEY` | Dari provider AI kamu (Gemini/OpenRouter/Custom) |
+| `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/apikey) → Create API Key |
+| `MONGO_URI` | [MongoDB Atlas](https://www.mongodb.com/atlas) → Free tier (512MB) |
 
 ---
 
@@ -245,17 +328,6 @@ Setup wizard akan otomatis tanya apakah mau setup Cloudflare Tunnel. Jawab **Y**
 | Polling (default) | ~750 MB/bulan | Real-time | No setup |
 | Webhook + Tunnel | ~1 MB/bulan | Real-time | Need domain |
 
-### Service per Platform
-
-| Platform | Service | Auto-restart |
-|----------|---------|--------------|
-| Linux (systemd) | `cloudflared.service` | ✅ |
-| GCP | `cloudflared.service` + QUIC | ✅ |
-| Termux | nohup + Termux:Boot | ❌ |
-| OpenWRT | `/etc/init.d/cloudflared` | ✅ |
-| macOS | `com.jhopan.cloudflared.plist` | ✅ |
-| Windows | NSSM service | ✅ |
-
 ---
 
 ## 📊 Migration: whatsapp-web.js → Baileys
@@ -274,31 +346,100 @@ Setup wizard akan otomatis tanya apakah mau setup Cloudflare Tunnel. Jawab **Y**
 ## 📁 Project Structure
 
 ```
-JhopanWaBotRenunganBaileys/
+JhopanWaBotRenungan/
 ├── src/
-│   ├── index.js              # Entry point
-│   ├── botWhatsApp.js        # WhatsApp bot (Baileys)
-│   ├── botTelegram.js        # Telegram bot (panel kontrol)
-│   ├── renunganHandler.js    # Cron job renungan
+│   ├── index.js                    # Entry point
+│   ├── botWhatsApp.js              # WhatsApp bot (Baileys)
+│   ├── botTelegram.js              # Telegram bot (panel kontrol)
+│   ├── renunganHandler.js          # Orchestrator renungan + verse inject
 │   ├── services/
-│   │   └── aiService.js      # AI provider (Custom/Gemini/OpenRouter)
+│   │   ├── aiService.js            # AI provider + Prompt V4
+│   │   ├── versePool.js            # Unified verse pool manager
+│   │   ├── verseScraper.js         # 🆕 Scraping alkitab.mobi (TB)
+│   │   ├── bibleVerseDB.js         # 🆕 MongoDB Bible text (31,102 ayat)
+│   │   ├── bibleScrapeScheduler.js # 🆕 1 kitab/jam scheduler
+│   │   ├── mongoService.js         # MongoDB connection
+│   │   ├── mongoDataService.js     # MongoDB data CRUD
+│   │   └── mongoAuthState.js       # WhatsApp auth in MongoDB
 │   ├── utils/
-│   │   ├── configManager.js  # Config management
-│   │   ├── dateHelper.js     # Date utilities
-│   │   ├── fileHelper.js     # File operations
-│   │   └── logger.js         # Logging
-│   └── data/                 # Data storage (JSON)
-├── setup.sh                  # 🚀 Universal launcher (auto-detect)
-├── setup-gcp.sh              # ☁️ GCP setup (auto zram)
-├── setup-vps.sh              # 🐧 Generic Linux VPS
-├── setup-termux.sh           # 📱 Termux (Android)
-├── setup-openwrt.sh          # 🔌 OpenWRT Router
-├── setup-macos.sh            # 🍎 macOS
-├── setup.bat                 # 🪟 Windows
-├── ecosystem.config.js       # PM2 configuration
-├── package.json              # Dependencies
-├── .env.example              # Environment template
-└── README.md                 # This file
+│   │   ├── configManager.js        # Persistent config (MongoDB/JSON)
+│   │   ├── dateHelper.js           # Date utilities
+│   │   ├── fileHelper.js           # File operations
+│   │   └── logger.js               # Logging
+│   └── data/                       # Verse data (JSON per tahun)
+│       ├── verses_2026.json        # 365 ayat tahun 2026
+│       ├── verses_2027.json        # 365 ayat tahun 2027
+│       ├── ... (sampai 2030)
+│       └── verses_text.json        # Legacy cached verse texts
+├── scripts/
+│   ├── fetchAllVerses.js           # Manual scraping script
+│   └── testVerseInject.js          # Verse inject test script
+├── setup.sh                        # 🚀 Universal launcher (auto-detect)
+├── setup-gcp.sh                    # ☁️ GCP setup (auto zram)
+├── setup-vps.sh                    # 🐧 Generic Linux VPS
+├── setup-termux.sh                 # 📱 Termux (Android)
+├── setup-openwrt.sh                # 🔌 OpenWRT Router
+├── setup-macos.sh                  # 🍎 macOS
+├── setup.bat                       # 🪟 Windows
+├── ecosystem.config.js             # PM2 configuration
+├── package.json                    # Dependencies
+├── .env.example                    # Environment template
+└── README.md                       # This file
+```
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    JhopanWa Bot Renungan                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────────┐  │
+│  │  WhatsApp    │    │   Telegram   │    │   Scheduler      │  │
+│  │  (Baileys)   │    │  Bot (API)   │    │                  │  │
+│  │              │    │              │    │  ┌────────────┐  │  │
+│  │  Kirim pesan │    │  Admin panel │    │  │ Renungan   │  │  │
+│  │  ke group    │◄───┤  Dashboard   │    │  │ (08:00)    │  │  │
+│  │              │    │  Commands    │    │  ├────────────┤  │  │
+│  └──────────────┘    └──────────────┘    │  │ Scraper    │  │  │
+│                                           │  │ (1 kitab/  │  │  │
+│                                           │  │  jam)      │  │  │
+│                                           │  └────────────┘  │  │
+│                                           └──────────────────┘  │
+│         │                   │                    │               │
+│         └───────────────────┼────────────────────┘               │
+│                             │                                    │
+│              ┌──────────────┼──────────────┐                     │
+│              │              │              │                     │
+│     ┌────────┴────────┐ ┌──┴───┐ ┌───────┴───────┐             │
+│     │   AI Service    │ │Verse │ │  Bible Verse  │             │
+│     │ (Gemini Flash-  │ │Pool  │ │  DB (MongoDB) │             │
+│     │  Lite + V4)     │ │      │ │  31,102 ayat  │             │
+│     └─────────────────┘ └──────┘ └───────────────┘             │
+│                                                                  │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │              Express Webhook Server                        │   │
+│  │              (Cloudflare Tunnel / Polling)                 │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Alur Harian
+
+```
+07:30  → AI pre-compute tema hari ini (pool mode)
+07:00  → Scraper PAUSE
+08:00  → RENUNGAN
+         ├── Pilih ayat (pool/yearly mode)
+         ├── Ambil teks dari DB (atau scrape on-demand)
+         ├── AI generate renungan (Prompt V4 + verse inject)
+         ├── Kirim ke WA group utama
+         └── Kirim ke multi-group (delayed)
+09:00  → Scraper RESUME
+setiap jam → Scrape 1 kitab dari alkitab.mobi (~3 hari = selesai)
 ```
 
 ---
@@ -330,41 +471,13 @@ JhopanWaBotRenunganBaileys/
 
 | Command | Description |
 |---------|-------------|
-| `/start` | Panel kontrol utama |
-| `/status` | Status bot & koneksi |
-| `/test` | Test kirim renungan sekarang |
-| `/settings` | Pengaturan bot |
-| `/verses` | Kelola daftar ayat |
+| `/start` | Panel kontrol utama (atau login WA) |
+| `/status` | Status bot, WA, AI, memory, verses |
+| `/renungan` | Menu pengelolaan renungan |
+| `/testai` | Test koneksi AI |
+| `/pool` | Statistik verse pool |
+| `/seedpool` | Re-seed pool dari file JSON |
 | `/help` | Bantuan |
-
----
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    JhopanWa Bot Renungan                     │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  │
-│  │  WhatsApp    │    │   Telegram   │    │   Renungan   │  │
-│  │   (Baileys)  │    │  Bot (API)   │    │  Scheduler   │  │
-│  └──────┬───────┘    └──────┬───────┘    └──────┬───────┘  │
-│         │                   │                   │          │
-│         └───────────────────┼───────────────────┘          │
-│                             │                              │
-│                    ┌────────┴────────┐                     │
-│                    │   AI Service    │                     │
-│                    │ (Gemini/OpenAI) │                     │
-│                    └─────────────────┘                     │
-│                                                              │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │              Express Webhook Server                   │  │
-│  │              (Cloudflare Tunnel / Polling)            │  │
-│  └──────────────────────────────────────────────────────┘  │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
 
 ---
 
@@ -374,9 +487,11 @@ JhopanWaBotRenunganBaileys/
 |---------|---------|
 | [Baileys](https://github.com/WhiskeySockets/Baileys) | WhatsApp Web API (no Chromium!) |
 | [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api) | Telegram Bot API |
+| [Mongoose](https://mongoosejs.com/) | MongoDB ODM (Bible text + auth + config) |
 | [Express](https://expressjs.com/) | Webhook server |
-| [node-cron](https://github.com/node-cron/node-cron) | Task scheduler |
-| [axios](https://axios-http.com/) | HTTP client (AI API calls) |
+| [node-cron](https://github.com/node-cron/node-cron) | Task scheduler (renungan) |
+| [axios](https://axios-http.com/) | HTTP client (AI API + scraping) |
+| [moment-timezone](https://momentjs.com/timezone/) | Timezone-aware scheduling |
 | [PM2](https://pm2.keymetrics.io/) | Process manager |
 | [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/) | Free HTTPS tunnel |
 
@@ -387,9 +502,28 @@ JhopanWaBotRenunganBaileys/
 <details>
 <summary><b>Bot tidak bisa connect WhatsApp</b></summary>
 
-- Hapus folder `auth_state/` dan restart bot
-- Scan QR code ulang dari WhatsApp → Linked Devices
+- Hapus auth dari MongoDB: `db.whatsapp_auth.deleteMany({})`
+- Restart bot dan scan QR code ulang
+- QR code dikirim otomatis ke Telegram admin
 - Pastikan WhatsApp di HP aktif dan terkoneksi internet
+</details>
+
+<details>
+<summary><b>Scraping gagal terus untuk beberapa pasal</b></summary>
+
+- Cek koneksi internet server
+- Layer 2 & 3 akan otomatis retry
+- Kalau tetap gagal, cek apakah alkitab.mobi bisa diakses dari server
+- Ayat yang gagal akan di-scrape on-demand saat renungan
+</details>
+
+<details>
+<summary><b>Renungan tidak terkirim</b></summary>
+
+- Cek WhatsApp connected: `/status` di Telegram
+- Cek AI API key valid: `/testai` di Telegram
+- Cek MongoDB connected: lihat log startup
+- Kalau WA disconnect, retry otomatis dalam 10 menit
 </details>
 
 <details>
@@ -416,6 +550,17 @@ JhopanWaBotRenunganBaileys/
 - Restart: `sudo systemctl restart zramswap`
 </details>
 
+<details>
+<summary><b>Mau reset scraping dari awal</b></summary>
+
+```bash
+# Hapus state scraping dari MongoDB
+mongosh "YOUR_MONGO_URI" --eval "db.scrape_state.deleteOne({_id: 'bible_scrape_progress'})"
+
+# Restart bot — scraper akan mulai dari Kejadian lagi
+```
+</details>
+
 ---
 
 ## 📄 License
@@ -429,6 +574,7 @@ MIT License — Bebas digunakan dan dimodifikasi.
 - [JhopanStore](https://jhopanstore.my.id) — Infrastructure & AI API Provider
 - [Baileys](https://github.com/WhiskeySockets/Baileys) — WhatsApp Web API (lightweight, no Chromium)
 - [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api) — Telegram Bot API
+- [alkitab.mobi](https://alkitab.mobi) — Sumber teks Alkitab Terjemahan Baru (Yayasan Lembaga SABDA)
 - [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/) — Free HTTPS tunnel
 - [Google Gemini AI](https://ai.google.dev/) — AI provider
 

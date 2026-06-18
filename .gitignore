@@ -18,6 +18,17 @@ Baileys/
 # Google credentials
 credentials.json
 
+# Test files & temp
+test_*.js
+test_*.md
+*_test*.md
+AI_TEST_*.md
+PROMPT_*.md
+TEST_*.md
+gemini_flash_result.txt
+_temp_alkitab/
+src/data/ai_rate_limit.json
+
 # Logs
 *.log
 logs/

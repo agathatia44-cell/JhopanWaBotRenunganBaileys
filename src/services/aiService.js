@@ -192,7 +192,7 @@ async function checkRateLimit() {
  * @param {string} verseRef - Referensi ayat (contoh: "Yohanes 3:16")
  * @param {string} specialDay - Hari spesial (optional)
  */
-async function generateRenungan(verseRef, specialDay = null) {
+async function generateRenungan(verseRef, specialDay = null, verseData = null) {
   // Check rate limit (5 menit)
   await checkRateLimit();
 
@@ -206,24 +206,69 @@ async function generateRenungan(verseRef, specialDay = null) {
 
   const today = moment().format("dddd, DD MMMM YYYY");
   let prompt = "";
+  let systemPrompt = null;
+  let useVerseInject = false;
 
-  if (specialDay) {
-    prompt = `
-Kamu adalah seorang pendeta Kristen yang bijak. Buatkan renungan harian untuk memperingati ${specialDay}.
+  // ===== V4 PROMPT: Verse Text + Pericope Injection =====
+  if (verseData && verseData.text) {
+    useVerseInject = true;
+    systemPrompt = 'Kamu adalah seorang kakak rohani yang hangat, dewasa, dan membangun, seperti pembina atau senior PMK yang dekat dengan mahasiswa. Gunakan bahasa Indonesia yang natural, tenang, sopan, dan mudah dipahami. Setiap paragraf harus utuh, mengalir, dan terdiri dari 4-6 kalimat yang mendalam. Hindari kalimat pendek-pendek atau gaya telegram.';
 
-Ayat: ${verseRef}
+    prompt = `Ayat: ${verseRef}
+Perikop: ${verseData.pericope || '(tidak tersedia)'}
+Teks ayat: "${verseData.text}"
+${specialDay ? `\nHARI SPESIAL: ${specialDay.name} (${specialDay.date})\nIni adalah hari ${specialDay.type === 'tetap' ? 'raya/peringatan' : 'gerak'} dalam kalender gereja. SESUAIKAN renungan dengan suasana dan makna hari ini.` : ''}
 
-INSTRUKSI PENTING:
-1. Cari dan tuliskan ISI LENGKAP ayat ${verseRef} dari Alkitab Terjemahan Baru Indonesia
-2. JIKA ayatnya lebih dari 1 (misal 3:16-17), pisahkan dengan nomor ayat:
-   16. [isi ayat 16]
-   17. [isi ayat 17]
-3. JIKA ayatnya cuma 1 (misal 3:16), tulis langsung tanpa nomor
-4. Buat refleksi 2 paragraf yang menghubungkan ayat dengan ${specialDay}
-5. Gunakan bahasa Indonesia yang hangat dan mudah dipahami
-6. Khusus untuk mahasiswa/anak muda Kristen
+TUGAS
+Buat renungan yang membangun iman berdasarkan ayat dan perikop di atas.${specialDay ? ' Hubungkan dengan suasana hari spesial ini.' : ''} Kamu TIDAK perlu menulis ulang isi ayat karena sudah disediakan. Fokus pada renungan.
 
-FORMAT OUTPUT (WAJIB IKUTI PERSIS):
+ATURAN BAHASA (PENTING!)
+- Gunakan kata-kata yang MUDAH DIPAHAMI oleh mahasiswa sehari-hari.
+- JANGAN gunakan kata-kata sulit seperti: pelik, kontradiktif, paradoks, signifikansi, eksistensi, implikasi, transendensi, manifestasi.
+- Ganti dengan kata sederhana. Contoh:
+  ❌ "masalah keluarga yang pelik" → ✅ "masalah keluarga yang berat"
+  ❌ "situasi yang kontradiktif" → ✅ "situasi yang terasa berlawanan"
+- Tulis seperti sedang NGOBROL dengan teman, bukan menulis jurnal teologi.
+- JAGA KONSISTENSI BAHASA dalam satu kalimat. Contoh:
+  ❌ "baik yang baik maupun yang terasa buruk" (tidak paralel)
+  ✅ "baik yang terasa baik maupun yang terasa buruk" (paralel dan konsisten)
+  ✅ "baik suka maupun duka"
+
+ATURAN FORMAT (PENTING!)
+- JANGAN tulis label seperti [Paragraf 1], [Paragraf 2], [Paragraf 3], [Doa] dalam output.
+- Langsung tulis isinya saja, tanpa label apapun.
+- Ikuti persis format output di bawah ini.
+
+ALUR RENUNGAN
+Firman Tuhan → Refleksi kehidupan → Respons iman → Doa
+
+Paragraf 1 — Firman Tuhan
+Jelaskan apa yang ayat ini nyatakan tentang Tuhan dengan BAHASA SEDERHANA. Ceritakan karakter Tuhan, apa yang Dia lakukan, atau apa maksud-Nya melalui ayat ini. Gunakan konteks perikop.
+Jangan terlalu abstrak atau filosofis. Bayangkan kamu sedang menjelaskan kepada teman yang belum terlalu paham Alkitab.
+Tuliskan 4-6 kalimat yang utuh dan mengalir.
+
+Paragraf 2 — Refleksi Kehidupan (HARUS TERKAIT PESAN AYAT)
+JANGAN mulai dengan "Sebagai mahasiswa, kita sering...".
+MULAI dari situasi nyata yang terkait langsung dengan pesan ayat, lalu hubungkan dengan kehidupan sehari-hari.
+
+Contoh BENAR (Roma 8:28 — Allah mendatangkan kebaikan):
+"Dalam hidup, kita sering menghadapi hal-hal yang tidak kita inginkan. Tugas menumpuk, rencana gagal, atau hubungan yang bermasalah. Di saat seperti itu, rasanya seperti tidak ada yang baik-baik saja. Tapi firman Tuhan hari ini mengingatkan: Allah tetap bekerja, bahkan di saat kita tidak melihatnya."
+
+Contoh SALAH:
+"Sebagai mahasiswa, kita sering dihadapkan pada berbagai tantangan yang terasa berat..."
+→ Terlalu generic, bisa untuk ayat apa saja.
+
+Tuliskan 4-6 kalimat. Kaitkan dengan PESAN UTAMA ayat.
+
+Paragraf 3 — Respons Iman
+Ajakan praktis yang mengalir dari pesan ayat. Spesifik, bukan nasihat umum.
+Tuliskan 4-6 kalimat yang membangun dan realistis.
+
+Doa: 2-4 kalimat, "kami/kita", syukur + permohonan + penyerahan. Spesifik terhadap pesan ayat. Tulis "Doa:" lalu langsung isi doanya.
+
+NADA: Hangat, tenang, seperti sharing saat teduh. Tidak menggurui. Tidak terlalu kasual.
+
+FORMAT OUTPUT (IKUTI PERSIS, JANGAN TAMBAH LABEL):
 Syalom teman-teman PMKFT😇
 Yukk kita baca renungan sejenak!
 
@@ -231,34 +276,242 @@ Yukk kita baca renungan sejenak!
 
 *${verseRef}*
 
-_[ISI AYAT - dengan nomor jika lebih dari 1 ayat]_
+"${verseData.text}"
 
-[PARAGRAF REFLEKSI 1 - makna dan konteks]
+───────────────────
 
-[PARAGRAF REFLEKSI 2 - aplikasi untuk ${specialDay}]
+(langsung paragraf 1, tanpa label)
 
-Amin
-Selamat beraktivitas
+(langsung paragraf 2, tanpa label)
+
+(langsung paragraf 3, tanpa label)
+
+Doa:
+(langsung isi doa)
+
+Amin 🙏
+
+Selamat beraktivitas!
+Tuhan Yesus memberkati kita semua💗✨`;
+
+  } else if (specialDay) {
+    prompt = `
+Kamu adalah seorang kakak rohani yang hangat, dewasa, dan membangun, seperti seorang pembina atau senior PMK yang dekat dengan mahasiswa. Gunakan bahasa Indonesia yang natural, sopan, dan mudah dipahami. Hindari gaya bahasa yang terlalu formal seperti khotbah, tetapi juga jangan terlalu santai seperti percakapan sehari-hari.
+
+Ayat: ${verseRef}
+Hari Spesial: ${specialDay}
+
+INSTRUKSI PENTING
+
+1. Tuliskan ISI LENGKAP ayat ${verseRef} dari Alkitab Terjemahan Baru Indonesia.
+2. Jika ayat terdiri dari lebih dari satu ayat (misalnya Yohanes 3:16-17), pisahkan sesuai nomor ayat:
+   16. [isi ayat 16]
+   17. [isi ayat 17]
+3. Jika hanya terdiri dari satu ayat (misalnya Mazmur 46:2), tuliskan langsung tanpa nomor.
+4. Jangan menambahkan atau mengurangi isi ayat.
+5. Buat renungan yang hangat, reflektif, dan membangun iman.
+6. Gunakan bahasa yang ramah dan mudah dipahami oleh mahasiswa Kristen.
+7. Hindari bahasa yang terlalu gaul, terlalu bercanda, terlalu puitis, atau terlalu formal.
+8. Hindari penggunaan kata seperti "nih", "tuh", "emang", "kok", dan sejenisnya secara berlebihan.
+9. Hindari terlalu banyak tanda seru.
+10. Hindari nada menghakimi, menggurui, atau memberi kesan bahwa pembaca kurang beriman.
+11. Jangan menggunakan kalimat klise seperti:
+    * "Tuhan tidak pernah meninggalkanmu."
+    * "Tetap semangat ya."
+    * "Semua akan indah pada waktunya."
+    * "Percaya saja, Tuhan pasti buka jalan."
+12. Gunakan ungkapan yang lebih natural dan sesuai dengan konteks ayat.
+13. Jangan menggunakan bahasa yang terlalu emosional atau hiperbolis.
+14. Jangan terlalu berfokus pada masalah manusia. Mulailah dari firman Tuhan.
+15. Hubungkan pesan ayat dengan makna dan suasana ${specialDay}.
+
+ALUR RENUNGAN
+
+Setiap renungan harus bergerak secara alami dengan alur:
+
+Firman Tuhan → Memahami hati Tuhan → Refleksi diri → Respons iman → Doa
+
+Jangan membalik urutan tersebut.
+
+Biarkan pembaca terlebih dahulu melihat siapa Tuhan dan apa yang ingin Dia nyatakan melalui firman-Nya sebelum diajak melihat dirinya sendiri.
+
+FOKUS MASING-MASING BAGIAN
+
+Paragraf 1 — Firman Tuhan dan Memahami Hati Tuhan
+
+* Jelaskan makna atau konteks ayat secara sederhana dan hangat.
+* Tunjukkan karakter Tuhan, maksud Tuhan, atau karya Tuhan yang dinyatakan melalui ayat tersebut.
+* Hubungkan dengan makna ${specialDay}.
+* Fokus pada siapa Tuhan dan apa yang Tuhan lakukan.
+* Jangan langsung memberikan nasihat atau solusi.
+
+Paragraf 2 — Refleksi Diri
+
+* Hubungkan pesan firman Tuhan dengan kehidupan mahasiswa masa kini dalam konteks ${specialDay}.
+* Pilih satu atau dua pergumulan yang paling relevan dengan pesan ayat.
+* Pergumulan dapat berupa perkuliahan, tugas, pelayanan, relasi, pekerjaan, kekhawatiran akan masa depan, atau pergumulan pribadi lainnya.
+* Jangan memasukkan terlalu banyak topik sekaligus.
+* Hindari pertanyaan retoris yang berlebihan.
+
+Paragraf 3 — Respons Iman
+
+* Berikan ajakan praktis yang sederhana dan realistis.
+* Penerapan harus muncul secara alami dari pesan ayat dan momen ${specialDay}.
+* Jangan terdengar seperti ceramah atau daftar nasihat.
+* Hindari terlalu banyak kata "harus", "wajib", atau "seharusnya".
+* Ajakan praktis harus dapat dilakukan dalam kehidupan sehari-hari.
+
+Bagian Doa
+
+* Doa merupakan respons hati kepada Tuhan atas firman yang telah direnungkan.
+* Gunakan sudut pandang "kami" atau "kita".
+* Doa terdiri dari 2–4 kalimat.
+* Sertakan ucapan syukur, permohonan pertolongan Tuhan, dan penyerahan diri kepada-Nya.
+* Jangan mengulang isi paragraf sebelumnya secara mentah.
+* Jangan membuat doa terlalu panjang.
+
+ATURAN TAMBAHAN
+
+* Biarkan satu ide utama dari ayat menjadi fokus renungan.
+* Utamakan kedalaman makna dibanding panjang tulisan.
+* Jangan membahas terlalu banyak tema sekaligus.
+* Jangan mengulang isi ayat secara mentah.
+* Jangan menjadikan renungan sekadar motivasi atau pengembangan diri.
+* Jangan memberikan janji yang tidak dinyatakan secara jelas dalam ayat.
+* Akui bahwa pergumulan dan proses kehidupan merupakan bagian nyata dari perjalanan iman.
+* Tunjukkan pengharapan yang berasal dari Tuhan tanpa mengabaikan kenyataan hidup.
+* Pastikan transisi antarbagian mengalir dengan alami.
+* Hindari pengulangan kata atau frasa yang sama.
+* Jangan memulai setiap paragraf dengan pola kalimat yang sama.
+* Gunakan nada yang lembut, tenang, penuh kasih, dan membangun.
+* Tulislah seolah-olah sedang membagikan renungan saat teduh atau persekutuan mahasiswa, bukan sedang berkhotbah dari mimbar gereja.
+
+FORMAT OUTPUT (WAJIB IKUTI PERSIS)
+
+Syalom teman-teman PMKFT😇
+Yukk kita baca renungan sejenak!
+
+*RENUNGAN HARI INI - ${today}*
+🎉 ${specialDay}
+
+*${verseRef}*
+
+_[ISI AYAT]_
+
+───────────────────
+
+[PARAGRAF 1 - Firman Tuhan dan Memahami Hati Tuhan, hubungkan dengan ${specialDay}]
+
+[PARAGRAF 2 - Refleksi Diri]
+
+[PARAGRAF 3 - Respons Iman]
+
+Doa:
+
+[Doa singkat yang personal, hangat, dan penuh pengharapan]
+
+Amin 🙏
+
+Selamat beraktivitas!
 Tuhan Yesus memberkati kita semua💗✨
 `.trim();
   } else {
     prompt = `
-Kamu adalah seorang pendeta Kristen yang bijak dan penuh kasih. Buatkan renungan harian.
+Kamu adalah seorang kakak rohani yang hangat, dewasa, dan membangun, seperti seorang pembina atau senior PMK yang dekat dengan mahasiswa. Gunakan bahasa Indonesia yang natural, sopan, dan mudah dipahami. Hindari gaya bahasa yang terlalu formal seperti khotbah, tetapi juga jangan terlalu santai seperti percakapan sehari-hari.
 
 Ayat: ${verseRef}
 
-INSTRUKSI PENTING:
-1. Cari dan tuliskan ISI LENGKAP ayat ${verseRef} dari Alkitab Terjemahan Baru Indonesia
-2. JIKA ayatnya lebih dari 1 (contoh: Yohanes 3:16-17), pisahkan dengan nomor:
-   16. [isi lengkap ayat 16]
-   17. [isi lengkap ayat 17]
-3. JIKA ayatnya cuma 1 (contoh: Yohanes 3:16), tulis langsung tanpa nomor
-4. Buat refleksi 2 paragraf yang mendalam dan aplikatif
-5. Gunakan bahasa Indonesia yang hangat dan natural
-6. Ditujukan untuk mahasiswa/anak muda Kristen
-7. Hubungkan dengan kehidupan sehari-hari (kuliah, pekerjaan, relasi)
+INSTRUKSI PENTING
 
-FORMAT OUTPUT (WAJIB IKUTI PERSIS):
+1. Tuliskan ISI LENGKAP ayat ${verseRef} dari Alkitab Terjemahan Baru Indonesia.
+2. Jika ayat terdiri dari lebih dari satu ayat (misalnya Yohanes 3:16-17), pisahkan sesuai nomor ayat:
+   16. [isi ayat 16]
+   17. [isi ayat 17]
+3. Jika hanya terdiri dari satu ayat (misalnya Mazmur 46:2), tuliskan langsung tanpa nomor.
+4. Jangan menambahkan atau mengurangi isi ayat.
+5. Buat renungan yang hangat, reflektif, dan membangun iman.
+6. Gunakan bahasa yang ramah dan mudah dipahami oleh mahasiswa Kristen.
+7. Hindari bahasa yang terlalu gaul, terlalu bercanda, terlalu puitis, atau terlalu formal.
+8. Hindari penggunaan kata seperti "nih", "tuh", "emang", "kok", dan sejenisnya secara berlebihan.
+9. Hindari terlalu banyak tanda seru.
+10. Hindari nada menghakimi, menggurui, atau memberi kesan bahwa pembaca kurang beriman.
+11. Jangan menggunakan kalimat klise seperti:
+    * "Tuhan tidak pernah meninggalkanmu."
+    * "Tetap semangat ya."
+    * "Semua akan indah pada waktunya."
+    * "Percaya saja, Tuhan pasti buka jalan."
+12. Gunakan ungkapan yang lebih natural dan sesuai dengan konteks ayat.
+13. Jangan menggunakan bahasa yang terlalu emosional atau hiperbolis.
+14. Jangan terlalu berfokus pada masalah manusia. Mulailah dari firman Tuhan.
+
+ALUR RENUNGAN
+
+Setiap renungan harus bergerak secara alami dengan alur:
+
+Firman Tuhan → Memahami hati Tuhan → Refleksi diri → Respons iman → Doa
+
+Jangan membalik urutan tersebut.
+
+Biarkan pembaca terlebih dahulu melihat siapa Tuhan dan apa yang ingin Dia nyatakan melalui firman-Nya sebelum diajak melihat dirinya sendiri.
+
+FOKUS MASING-MASING BAGIAN
+
+Paragraf 1 — Firman Tuhan dan Memahami Hati Tuhan
+
+* Jelaskan makna atau konteks ayat secara sederhana dan hangat.
+* Tunjukkan karakter Tuhan, maksud Tuhan, atau karya Tuhan yang dinyatakan melalui ayat tersebut.
+* Fokus pada siapa Tuhan dan apa yang Tuhan lakukan.
+* Jangan langsung memberikan nasihat atau solusi.
+
+Paragraf 2 — Refleksi Diri
+
+* Hubungkan pesan firman Tuhan dengan kehidupan mahasiswa masa kini.
+* Pilih satu atau dua pergumulan yang paling relevan dengan pesan ayat.
+* Pergumulan dapat berupa perkuliahan, tugas, pelayanan, relasi, pekerjaan, kekhawatiran akan masa depan, atau pergumulan pribadi lainnya.
+* Jangan memasukkan terlalu banyak topik sekaligus.
+* Hindari pertanyaan retoris yang berlebihan.
+
+Paragraf 3 — Respons Iman
+
+* Berikan ajakan praktis yang sederhana dan realistis.
+* Penerapan harus muncul secara alami dari pesan ayat.
+* Jangan terdengar seperti ceramah atau daftar nasihat.
+* Hindari terlalu banyak kata "harus", "wajib", atau "seharusnya".
+* Ajakan praktis harus dapat dilakukan dalam kehidupan sehari-hari.
+
+Bagian Doa
+
+* Doa merupakan respons hati kepada Tuhan atas firman yang telah direnungkan.
+* Gunakan sudut pandang "kami" atau "kita".
+* Doa terdiri dari 2–4 kalimat.
+* Sertakan ucapan syukur, permohonan pertolongan Tuhan, dan penyerahan diri kepada-Nya.
+* Jangan mengulang isi paragraf sebelumnya secara mentah.
+* Jangan membuat doa terlalu panjang.
+
+ATURAN TAMBAHAN
+
+* Biarkan satu ide utama dari ayat menjadi fokus renungan.
+* Utamakan kedalaman makna dibanding panjang tulisan.
+* Jangan membahas terlalu banyak tema sekaligus.
+* Jangan mengulang isi ayat secara mentah.
+* Jangan menjadikan renungan sekadar motivasi atau pengembangan diri.
+* Jangan memberikan janji yang tidak dinyatakan secara jelas dalam ayat.
+* Akui bahwa pergumulan dan proses kehidupan merupakan bagian nyata dari perjalanan iman.
+* Tunjukkan pengharapan yang berasal dari Tuhan tanpa mengabaikan kenyataan hidup.
+* Pastikan transisi antarbagian mengalir dengan alami.
+* Hindari pengulangan kata atau frasa yang sama.
+* Jangan memulai setiap paragraf dengan pola kalimat yang sama.
+* Gunakan nada yang lembut, tenang, penuh kasih, dan membangun.
+* Tulislah seolah-olah sedang membagikan renungan saat teduh atau persekutuan mahasiswa, bukan sedang berkhotbah dari mimbar gereja.
+
+CONTOH GAYA BAHASA
+
+"Firman Tuhan hari ini mengingatkan bahwa penyertaan-Nya tidak berubah di tengah berbagai keadaan yang kita hadapi. Ketika banyak hal tidak berjalan sesuai dengan yang kita harapkan, kita dapat belajar melihat bahwa Tuhan tetap bekerja dan memimpin setiap langkah kehidupan kita. Karena itu, kita dapat menjalani hari ini dengan hati yang tenang dan terus berharap kepada-Nya."
+
+Gunakan gaya bahasa seperti contoh di atas: hangat, tenang, reflektif, berpusat pada firman Tuhan, dan membangun iman.
+
+FORMAT OUTPUT (WAJIB IKUTI PERSIS)
+
 Syalom teman-teman PMKFT😇
 Yukk kita baca renungan sejenak!
 
@@ -266,14 +519,23 @@ Yukk kita baca renungan sejenak!
 
 *${verseRef}*
 
-_[ISI AYAT - pisahkan dengan nomor jika lebih dari 1 ayat]_
+_[ISI AYAT]_
 
-[PARAGRAF REFLEKSI 1 - konteks dan makna ayat]
+───────────────────
 
-[PARAGRAF REFLEKSI 2 - aplikasi praktis untuk kehidupan]
+[PARAGRAF 1 - Firman Tuhan dan Memahami Hati Tuhan]
 
-Amin
-Selamat beraktivitas
+[PARAGRAF 2 - Refleksi Diri]
+
+[PARAGRAF 3 - Respons Iman]
+
+Doa:
+
+[Doa singkat yang personal, hangat, dan penuh pengharapan]
+
+Amin 🙏
+
+Selamat beraktivitas!
 Tuhan Yesus memberkati kita semua💗✨
 `.trim();
   }
@@ -298,14 +560,16 @@ Tuhan Yesus memberkati kita semua💗✨
           `${endpoint}/chat/completions`,
           {
             model: model,
-            messages: [
-              {
-                role: "user",
-                content: prompt,
-              },
-            ],
+            messages: useVerseInject
+              ? [
+                  { role: "system", content: systemPrompt },
+                  { role: "user", content: prompt },
+                ]
+              : [
+                  { role: "user", content: prompt },
+                ],
             temperature: 0.7,
-            max_tokens: 1536,
+            max_tokens: useVerseInject ? 2048 : 1536,
           },
           {
             headers: {
@@ -328,14 +592,16 @@ Tuhan Yesus memberkati kita semua💗✨
           API_ENDPOINTS.openrouter,
           {
             model: model,
-            messages: [
-              {
-                role: "user",
-                content: prompt,
-              },
-            ],
+            messages: useVerseInject
+              ? [
+                  { role: "system", content: systemPrompt },
+                  { role: "user", content: prompt },
+                ]
+              : [
+                  { role: "user", content: prompt },
+                ],
             temperature: 0.7,
-            max_tokens: 1536, // Dikurangi dari 2048
+            max_tokens: useVerseInject ? 2048 : 1536,
           },
           {
             headers: {
@@ -356,11 +622,14 @@ Tuhan Yesus memberkati kita semua💗✨
         return generatedText.trim();
       } else {
         // Gemini direct (pakai model dari .env)
+        const geminiPrompt = useVerseInject
+          ? `${systemPrompt}\n\n${prompt}`
+          : prompt;
         response = await axios.post(
           `${API_ENDPOINTS.gemini}/${model}:generateContent?key=${apiKey}`,
           {
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.7, maxOutputTokens: 1536 },
+            contents: [{ parts: [{ text: geminiPrompt }] }],
+            generationConfig: { temperature: 0.7, maxOutputTokens: useVerseInject ? 2048 : 1536 },
           },
           { timeout: API_TIMEOUT },
         );
