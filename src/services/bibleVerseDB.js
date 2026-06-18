@@ -89,12 +89,54 @@ async function saveVersesBulk(verses) {
 
 /**
  * Ambil satu ayat berdasarkan ref
- * @param {string} ref - "Yohanes 3:16"
+ * Support single verse ("Yohanes 3:16") dan range ("Mazmur 139:13-14")
+ * @param {string} ref - "Yohanes 3:16" atau "Mazmur 139:13-14"
  * @returns {Promise<{ref, text, pericope, ...}|null>}
  */
 async function getVerse(ref) {
   const Model = getModel();
-  return Model.findOne({ ref }).lean();
+
+  // Coba exact match dulu
+  const exact = await Model.findOne({ ref }).lean();
+  if (exact) return exact;
+
+  // Kalau gagal, cek apakah ini range ref (misal "Mazmur 139:13-14")
+  const match = ref.match(/^(.+?)\s+(\d+):(\d+)(?:-(\d+))?$/);
+  if (!match) return null;
+
+  const book = match[1];
+  const chapter = parseInt(match[2]);
+  const verseStart = parseInt(match[3]);
+  const verseEnd = match[4] ? parseInt(match[4]) : verseStart;
+
+  // Kalau bukan range (single verse), tidak ada fallback
+  if (verseStart === verseEnd) return null;
+
+  // Query semua ayat individual dalam range ini
+  const verses = await Model.find({
+    book,
+    chapter,
+    verseStart: { $gte: verseStart, $lte: verseEnd },
+  })
+    .sort({ verseStart: 1 })
+    .lean();
+
+  if (verses.length === 0) return null;
+
+  // Gabungkan teks dari semua ayat individual
+  const combinedText = verses.length === 1
+    ? verses[0].text
+    : verses.map((v) => `${v.verseStart}. ${v.text}`).join(" ");
+
+  return {
+    ref,
+    text: combinedText,
+    pericope: verses[0].pericope,
+    book,
+    chapter,
+    verseStart,
+    verseEnd,
+  };
 }
 
 /**
