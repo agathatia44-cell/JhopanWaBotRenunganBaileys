@@ -136,9 +136,24 @@ Free tier 512 MB:        AMAN! (pakai 2.8%)
 
 Saat generate renungan:
 1. Cek ayat di database → ada? → inject ke prompt AI
-2. Belum ada? → scrape on-demand → simpan → inject
-3. AI fokus **menulis renungan** (bukan mengingat ayat)
-4. Hasil: **akurat, context-aware, tidak hallucinate**
+2. Belum ada? → **range fallback**: query ayat individual dari DB → gabungkan
+3. Masih belum ada? → scrape on-demand → simpan → inject
+4. AI fokus **menulis renungan** (bukan mengingat ayat)
+5. Hasil: **akurat, context-aware, tidak hallucinate**
+
+### Aturan Pemilihan Ayat
+
+| Mode | Jumlah Ayat | Keterangan |
+|------|-------------|------------|
+| **Hari biasa** | 1 ayat | Bisa berupa range (misal `Mazmur 4:5-7`) |
+| **Hari spesial** | 1-3 ayat | Semua dari **kitab + pasal yang sama** |
+
+```
+✅ Mazmur 4:5-7                        (range, 1 pasal)
+✅ Lukas 2:10-14; Lukas 2:15-20        (spesial, pasal sama)
+❌ Mazmur 139:13; Yohanes 3:16         (beda kitab)
+❌ Mazmur 7:4; Mazmur 5:7              (beda pasal)
+```
 
 ---
 
@@ -618,8 +633,8 @@ JhopanWaBotRenungan/
 07:30  → AI pre-compute tema hari ini (pool mode)
 07:00  → Scraper PAUSE
 08:00  → RENUNGAN
-         ├── Pilih ayat (pool/yearly mode)
-         ├── Ambil teks dari DB (atau scrape on-demand)
+         ├── Pilih 1 ayat (range OK) atau 1-3 ayat spesial (pasal sama)
+         ├── Ambil teks dari DB (range fallback atau scrape on-demand)
          ├── AI generate renungan (Prompt V4 + verse inject)
          ├── Kirim ke WA group utama
          └── Kirim ke multi-group (delayed)
