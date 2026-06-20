@@ -4,16 +4,14 @@
  * Features:
  * - Smart preprocessing (kutipan ayat tidak diubah, renungan dipreprocess)
  * - Voice rotation (Ganjil = Gadis, Genap = Ardi)
- * - Edge TTS integration
+ * - msedge-tts (Node.js native, NO Python needed!)
  */
 
-const { exec } = require('child_process');
-const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment-timezone');
+const { MsEdgeTTS, OUTPUT_FORMAT } = require('msedge-tts');
 
-const execAsync = promisify(exec);
 const TEMP_DIR = path.join(__dirname, '../../temp/tts_audio');
 
 // Ensure temp directory exists
@@ -29,22 +27,22 @@ if (!fs.existsSync(TEMP_DIR)) {
 function getVoiceForToday() {
   // Check if admin forced a specific voice
   const override = process.env.TTS_VOICE_OVERRIDE;
+  const femaleVoice = process.env.TTS_VOICE_FEMALE || 'id-ID-GadisNeural';
+  const maleVoice = process.env.TTS_VOICE_MALE || 'id-ID-ArdiNeural';
   
-  if (override === process.env.TTS_VOICE_FEMALE) {
-    return process.env.TTS_VOICE_FEMALE;
-  } else if (override === process.env.TTS_VOICE_MALE) {
-    return process.env.TTS_VOICE_MALE;
+  if (override && override === femaleVoice) {
+    return femaleVoice;
+  } else if (override && override === maleVoice) {
+    return maleVoice;
   }
   
   // Auto rotation based on date (odd/even)
   const date = moment().tz(process.env.TIMEZONE || 'Asia/Makassar').date(); // 1-31
   
   if (date % 2 === 1) {
-    // Ganjil: 1, 3, 5, 7, ...
-    return process.env.TTS_VOICE_FEMALE || 'id-ID-GadisNeural';
+    return femaleVoice;
   } else {
-    // Genap: 2, 4, 6, 8, ...
-    return process.env.TTS_VOICE_MALE || 'id-ID-ArdiNeural';
+    return maleVoice;
   }
 }
 
@@ -61,6 +59,31 @@ function getVoiceName(voice) {
 }
 
 /**
+ * Convert rate string to msedge-tts format
+ * "-0%" → "-0%" (SSML percentage format, same as before)
+ * "0%" → "0%"
+ * Can also accept numbers like 0.5, 1.0, 2.0
+ */
+function convertRate(rate) {
+  if (!rate || rate === '-0%' || rate === '0%') return '-0%';
+  // Already in SSML format (+X% or -X%), pass through
+  if (typeof rate === 'string' && rate.includes('%')) return rate;
+  // Numeric format
+  return rate;
+}
+
+/**
+ * Convert pitch string to msedge-tts format
+ * "+0Hz" → "+0Hz" (SSML Hz format, same as before)
+ */
+function convertPitch(pitch) {
+  if (!pitch || pitch === '+0Hz' || pitch === '0Hz') return '+0Hz';
+  // Already in SSML format (+XHz or -XHz), pass through
+  if (typeof pitch === 'string' && pitch.includes('Hz')) return pitch;
+  return pitch;
+}
+
+/**
  * Smart preprocessing untuk TTS
  * - Kutipan ayat (dalam " ") = TIDAK diubah (sakral)
  * - Renungan text = "-Mu" → "-mu", "-Nya" → "-nya" (lowercase, attached)
@@ -74,7 +97,7 @@ function smartPreprocessForTTS(text) {
   for (let i = 0; i < text.length; i++) {
     const char = text[i];
     
-    if (char === '"' || char === '"') {
+    if (char === '"' || char === '\u201C' || char === '\u201D') {
       if (inQuote) {
         current += char;
         segments.push({ text: current, isQuote: true });
@@ -185,15 +208,15 @@ function numberToWords(num) {
 }
 
 /**
- * Generate TTS audio
+ * Generate TTS audio using msedge-tts (Node.js native)
  * @param {string} text - Renungan text (original)
  * @param {Object} options - { voice, rate, pitch }
  * @returns {Promise<string>} - Path to generated audio file
  */
 async function generateTTS(text, options = {}) {
   const voice = options.voice || getVoiceForToday();
-  const rate = options.rate || process.env.TTS_RATE || '-0%';
-  const pitch = options.pitch || process.env.TTS_PITCH || '+0Hz';
+  const rate = convertRate(options.rate || process.env.TTS_RATE || '-0%');
+  const pitch = convertPitch(options.pitch || process.env.TTS_PITCH || '+0Hz');
   
   const timestamp = Date.now();
   const outputPath = path.join(TEMP_DIR, `renungan_${timestamp}.mp3`);
@@ -203,37 +226,47 @@ async function generateTTS(text, options = {}) {
   
   console.log('🎙️ Generating TTS audio...');
   console.log(`   Voice: ${voice} (${getVoiceName(voice)})`);
-  console.log(`   Rate: ${rate}`);
+  console.log(`   Rate: ${rate}, Pitch: ${pitch}`);
   console.log(`   Date: ${moment().tz(process.env.TIMEZONE || 'Asia/Makassar').format('DD MMMM YYYY')} (Tanggal ${moment().date()})`);
   
   try {
-    // Write text to temp file to avoid shell escaping issues
-    const textFilePath = path.join(TEMP_DIR, `text_${timestamp}.txt`);
-    fs.writeFileSync(textFilePath, preprocessedText, 'utf-8');
+    // Initialize msedge-tts client
+    const tts = new MsEdgeTTS();
+    await tts.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3);
     
-    try {
-      // Use file input instead of shell command to avoid injection
-      await execAsync(
-        `edge-tts --voice "${voice}" --rate="${rate}" --pitch="${pitch}" --file "${textFilePath}" --write-media "${outputPath}"`,
-        { timeout: 120000, shell: true } // 2 minute timeout, auto-detect shell
-      );
+    // Generate audio stream
+    const { audioStream } = tts.toStream(preprocessedText, { rate, pitch });
+    
+    // Write stream to file
+    await new Promise((resolve, reject) => {
+      const writeStream = fs.createWriteStream(outputPath);
+      audioStream.pipe(writeStream);
+      writeStream.on('finish', resolve);
+      writeStream.on('error', reject);
+      audioStream.on('error', reject);
       
-      console.log(`✅ TTS audio generated: ${outputPath}`);
-      return outputPath;
-      
-    } finally {
-      // Always cleanup text file (even on error)
-      try {
-        if (fs.existsSync(textFilePath)) {
-          fs.unlinkSync(textFilePath);
-        }
-      } catch (cleanupErr) {
-        console.warn('⚠️ Failed to cleanup text file:', cleanupErr.message);
-      }
+      // Timeout after 2 minutes
+      setTimeout(() => reject(new Error('TTS generation timeout (120s)')), 120000);
+    });
+    
+    // Close the WebSocket connection
+    tts.close();
+    
+    // Verify file was created and has content
+    const stats = fs.statSync(outputPath);
+    if (stats.size < 1000) {
+      throw new Error(`Audio file too small (${stats.size} bytes) — likely empty`);
     }
+    
+    console.log(`✅ TTS audio generated: ${outputPath} (${(stats.size / 1024).toFixed(0)} KB)`);
+    return outputPath;
     
   } catch (error) {
     console.error('❌ TTS generation failed:', error.message);
+    // Cleanup partial file
+    try {
+      if (fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
+    } catch (e) { /* ignore */ }
     throw error;
   }
 }
