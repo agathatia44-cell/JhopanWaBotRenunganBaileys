@@ -607,13 +607,14 @@ async function sendRenunganWithMessage(message, verseUids = [], audioPath = null
 
     // Jika multi-group enabled, kirim ke grup lain dengan delay
     if (useMultiGroup && renunganGroups.length > 0) {
+      const additionalGroups = renunganGroups.filter(g => g.id !== groupId);
       console.log(
-        `📢 Multi-group mode: akan kirim ke ${renunganGroups.length} grup tambahan`,
+        `📢 Multi-group mode: akan kirim ke ${additionalGroups.length} grup tambahan`,
       );
 
-      for (let i = 0; i < renunganGroups.length; i++) {
-        const group = renunganGroups[i];
-        if (group.id === groupId) continue; // Skip grup utama
+      for (let i = 0; i < additionalGroups.length; i++) {
+        const group = additionalGroups[i];
+        const isLastGroup = i === additionalGroups.length - 1;
 
         // Delay antara grup (1-3 menit acak atau sesuai config)
         const delayMs = delayMinutes * 60 * 1000 + Math.random() * 60000;
@@ -625,16 +626,16 @@ async function sendRenunganWithMessage(message, verseUids = [], audioPath = null
               console.log(
                 `✅ Renungan terkirim ke grup ${group.name || group.id}`,
               );
-              
-              // Cleanup audio after last group
-              if (i === renunganGroups.length - 1 && audioPath) {
-                ttsService.cleanupAudio(audioPath);
-              }
             } catch (err) {
               console.error(
                 `❌ Gagal kirim ke grup ${group.name || group.id}:`,
                 err.message,
               );
+            } finally {
+              // Cleanup audio after last group (always, even on error)
+              if (isLastGroup && audioPath) {
+                ttsService.cleanupAudio(audioPath);
+              }
             }
           },
           delayMs * (i + 1),

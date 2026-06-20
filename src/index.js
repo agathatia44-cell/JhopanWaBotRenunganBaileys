@@ -126,12 +126,27 @@ console.log(`
       const versePool = require("./services/versePool");
       const { getVerseMode } = (() => {
         // Quick mode check without importing renunganHandler
-        const mode = (process.env.VERSE_MODE || "pool").toLowerCase();
-        return { getVerseMode: () => mode === "yearly" ? "yearly" : "pool" };
+        const mode = (process.env.VERSE_MODE || "bible").toLowerCase();
+        if (mode === "pool") return { getVerseMode: () => "pool" };
+        if (mode === "yearly") return { getVerseMode: () => "yearly" };
+        return { getVerseMode: () => "bible" };
       })();
       const mode = getVerseMode();
 
-      if (mode === "pool") {
+      if (mode === "bible") {
+        const bibleVerseDB = require("./services/bibleVerseDB");
+        const bibleStats = await bibleVerseDB.getStats();
+        console.log(`📖 Verse mode: BIBLE`);
+        console.log(`   ${bibleStats.totalVerses} ayat dari ${bibleStats.booksInDB} kitab`);
+        console.log(`   📚 Tracking: Tidak (infinite variety)`);
+        // Show today theme from pool system
+        try {
+          const todayTheme = await versePool.getTodayTheme();
+          if (todayTheme) {
+            console.log(`   🎨 Today theme: ${todayTheme.theme} (${todayTheme.reason || ""})`);
+          }
+        } catch (e) { /* ignore */ }
+      } else if (mode === "pool") {
         const stats = await versePool.getPoolStats();
         console.log(`📖 Verse mode: POOL`);
         console.log(`   ${stats.used}/${stats.total} terpakai, ${stats.unused} tersisa (~${stats.estimatedYearsLeft} tahun)`);
