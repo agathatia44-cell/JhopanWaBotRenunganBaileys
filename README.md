@@ -31,6 +31,7 @@
 | 💾 Disk Size | ~10 MB (no browser!) |
 | 📖 Bible Database | 31,102 ayat (~15 MB di MongoDB) |
 | 🤖 AI Generation | ~5 detik per renungan |
+| 🎙️ TTS Generation | ~15 detik (msedge-tts, Node.js native) |
 | 📡 Bandwidth (Webhook) | ~1 MB/bulan |
 | 📡 Bandwidth (Polling) | ~750 MB/bulan |
 | 🖥️ Min. RAM | 256 MB |
@@ -42,11 +43,13 @@
 ### 📖 Renungan Harian Otomatis dengan AI
 AI generate renungan berdasarkan ayat Alkitab dengan **Prompt V4** — sistem message + verse text injection yang menghasilkan renungan berkualitas tinggi, context-aware, dan bebas halusinasi.
 
+- ✅ **Bible Mode (default)**: Semua 31,102 ayat Alkitab sebagai sumber — variasi tak terbatas
 - ✅ Teks ayat **PASTI akurat** (dari database, bukan AI hallucinate)
 - ✅ Perikop sebagai konteks tema renungan
 - ✅ Paragraf context-aware (terkait pesan ayat, bukan generic)
 - ✅ Bahasa sederhana & mudah dipahami mahasiswa
 - ✅ Support hari spesial (Natal, Paskah, Jumat Agung, dll)
+- ✅ **TTS Audio**: Renungan otomatis diubah jadi voice message (Node.js native)
 
 ### 📖 Bible Scrape System (BARU!)
 Sistem scraping otomatis seluruh Alkitab Terjemahan Baru (31,102 ayat) dari [alkitab.mobi](https://alkitab.mobi):
@@ -172,13 +175,16 @@ Saat generate renungan:
 
 ## 🎙️ TTS (Text-to-Speech)
 
-Bot dapat menghasilkan **audio renungan** menggunakan Microsoft Edge TTS dengan suara natural Indonesia. Member menerima **teks + voice message** di WhatsApp.
+Bot dapat menghasilkan **audio renungan** menggunakan **msedge-tts** (Node.js native) dengan suara natural Indonesia. Member menerima **teks + voice message** di WhatsApp.
+
+> **Zero Python dependency!** TTS menggunakan `msedge-tts` npm package — pure Node.js, jalan di mana saja tanpa perlu install Python atau Docker.
 
 ### Features:
 - ✅ **Smart Preprocessing**: Kutipan ayat tidak diubah (sakral), renungan dipreprocess untuk pronunciation optimal
 - ✅ **Voice Rotation**: Otomatis berganti suara setiap hari (ganjil = wanita, genap = pria)
 - ✅ **Natural Pronunciation**: "kasih-Mu" → "kasihmu" (attached), "Yohanes 3:16" → "Yohanes pasal tiga ayat enam belas"
 - ✅ **Preview Audio**: Test audio sebelum kirim ke WhatsApp group
+- ✅ **No Python needed**: Pure Node.js via msedge-tts
 
 ### Voices:
 | Voice | Gender | Character | Schedule |
@@ -187,15 +193,15 @@ Bot dapat menghasilkan **audio renungan** menggunakan Microsoft Edge TTS dengan 
 | `id-ID-ArdiNeural` | 🚹 Pria | Tegas, jelas | Tanggal genap (2, 4, 6, ...) |
 
 ### Setup:
-1. Install Python package: `pip install -r requirements.txt`
-2. Set `.env`:
-   ```env
-   TTS_ENABLED=true
-   TTS_VOICE_FEMALE=id-ID-GadisNeural
-   TTS_VOICE_MALE=id-ID-ArdiNeural
-   TTS_RATE=-0%
-   TTS_PITCH=+0Hz
-   ```
+```env
+TTS_ENABLED=true
+TTS_VOICE_FEMALE=id-ID-GadisNeural
+TTS_VOICE_MALE=id-ID-ArdiNeural
+TTS_RATE=-0%
+TTS_PITCH=+0Hz
+```
+
+> Tidak perlu install apapun! `msedge-tts` sudah termasuk dalam `npm install`.
 
 ### Usage:
 - **Preview**: Telegram → Renungan Harian → Preview Renungan → terima text + audio
@@ -338,9 +344,16 @@ GEMINI_API_KEY=***
 OPENROUTER_API_KEY=***
 
 # Renungan
-VERSE_MODE=pool          # "pool" atau "yearly"
+VERSE_MODE=bible          # "bible" (default, 31k ayat), "pool" (1.8k kurasi), atau "yearly"
 RENUNGAN_GROUP_ID=
 RENUNGAN_TIME=08:00
+
+# TTS (Text-to-Speech) — Node.js native via msedge-tts
+TTS_ENABLED=true
+TTS_VOICE_FEMALE=id-ID-GadisNeural
+TTS_VOICE_MALE=id-ID-ArdiNeural
+TTS_RATE=-0%
+TTS_PITCH=+0Hz
 
 # Webhook (opsional — hemat bandwidth)
 WEBHOOK_URL=https://your-domain.com
@@ -423,8 +436,8 @@ git push origin main
    → Region: Singapore (closest to Indonesia)
    → Branch: main
    → Runtime: Node
-   → Build Command: npm install
-   → Start Command: npm start
+   → Build Command: bash setup-render.sh
+   → Start Command: npm run start:render
 
 3. Instance Type
    → Free (spin down setelah 15 menit idle)
@@ -448,7 +461,10 @@ git push origin main
    │ GEMINI_API_KEY       │ (API key dari Google AI Studio)      │
    │ MONGO_URI            │ (connection string dari MongoDB)     │
    │ RENUNGAN_TIME        │ 08:00                                │
-   │ VERSE_MODE           │ pool                                 │
+   │ VERSE_MODE           │ bible                                │
+   │ TTS_ENABLED          │ true                                 │
+   │ TTS_VOICE_FEMALE     │ id-ID-GadisNeural                    │
+   │ TTS_VOICE_MALE       │ id-ID-ArdiNeural                     │
    │ WEBHOOK_URL          │ https://wa-renungan-bot.onrender.com │
    │ WEBHOOK_PORT         │ 10000                                │
    └──────────────────────┴──────────────────────────────────────┘
@@ -587,6 +603,7 @@ JhopanWaBotRenungan/
 │   ├── renunganHandler.js          # Orchestrator renungan + verse inject
 │   ├── services/
 │   │   ├── aiService.js            # AI provider + Prompt V4
+│   │   ├── ttsService.js           # 🎙️ TTS via msedge-tts (Node.js native)
 │   │   ├── versePool.js            # Unified verse pool manager
 │   │   ├── verseScraper.js         # 🆕 Scraping alkitab.mobi (TB)
 │   │   ├── bibleVerseDB.js         # 🆕 MongoDB Bible text (31,102 ayat)
@@ -720,6 +737,7 @@ setiap jam → Scrape 1 kitab dari alkitab.mobi (~3 hari = selesai)
 |---------|---------|
 | [Baileys](https://github.com/WhiskeySockets/Baileys) | WhatsApp Web API (no Chromium!) |
 | [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api) | Telegram Bot API |
+| [msedge-tts](https://github.com/Migushthe2nd/MsEdgeTTS) | TTS — Microsoft Edge Read Aloud (Node.js native) |
 | [Mongoose](https://mongoosejs.com/) | MongoDB ODM (Bible text + auth + config) |
 | [Express](https://expressjs.com/) | Webhook server |
 | [node-cron](https://github.com/node-cron/node-cron) | Task scheduler (renungan) |
