@@ -212,10 +212,52 @@ function numberToWords(num) {
 }
 
 /**
+ * Split text into chunks for TTS (max ~1500 chars per chunk)
+ * Splits on paragraph breaks, then sentences, to keep natural pauses
+ */
+function splitTextIntoChunks(text, maxLen = 1500) {
+  if (text.length <= maxLen) return [text];
+  
+  const chunks = [];
+  // Split by double newline (paragraphs) first
+  const paragraphs = text.split(/\n\n+/);
+  let current = '';
+  
+  for (const para of paragraphs) {
+    if ((current + '\n\n' + para).length <= maxLen) {
+      current = current ? current + '\n\n' + para : para;
+    } else {
+      // Flush current chunk
+      if (current) chunks.push(current.trim());
+      
+      // If single paragraph is still too long, split by sentences
+      if (para.length > maxLen) {
+        const sentences = para.match(/[^.!?]+[.!?]+[\s]*/g) || [para];
+        current = '';
+        for (const sent of sentences) {
+          if ((current + sent).length <= maxLen) {
+            current += sent;
+          } else {
+            if (current) chunks.push(current.trim());
+            current = sent;
+          }
+        }
+      } else {
+        current = para;
+      }
+    }
+  }
+  
+  if (current.trim()) chunks.push(current.trim());
+  return chunks;
+}
+
+/**
  * Generate TTS audio using msedge-tts (Node.js native)
+ * Supports long text by splitting into chunks and concatenating
  * @param {string} text - Renungan text (original)
  * @param {Object} options - { voice, rate, pitch }
- * @returns {Promise<string>} - Path to generated audio file
+ * @returns {Promise<string>} - Path to generated OGG audio file
  */
 async function generateTTS(text, options = {}) {
   const voice = options.voice || getVoiceForToday();
@@ -223,42 +265,76 @@ async function generateTTS(text, options = {}) {
   const pitch = convertPitch(options.pitch || process.env.TTS_PITCH || '+0Hz');
   
   const timestamp = Date.now();
-  const mp3Path = path.join(TEMP_DIR, `renungan_${timestamp}.mp3`);
   const oggPath = path.join(TEMP_DIR, `renungan_${timestamp}.ogg`);
   
   // Preprocess text
   const preprocessedText = smartPreprocessForTTS(text);
   
+  // Split into chunks
+  const chunks = splitTextIntoChunks(preprocessedText);
+  
   console.log('🎙️ Generating TTS audio...');
   console.log(`   Voice: ${voice} (${getVoiceName(voice)})`);
   console.log(`   Rate: ${rate}, Pitch: ${pitch}`);
+  console.log(`   Text: ${preprocessedText.length} chars → ${chunks.length} chunk(s)`);
   console.log(`   Date: ${moment().tz(process.env.TIMEZONE || 'Asia/Makassar').format('DD MMMM YYYY')} (Tanggal ${moment().date()})`);
   
+  const chunkFiles = [];
+  
   try {
-    // Step 1: Generate MP3 from msedge-tts
-    const tts = new MsEdgeTTS();
-    await tts.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3);
+    // Step 1: Generate MP3 per chunk
+    for (let i = 0; i < chunks.length; i++) {
+      const chunkPath = path.join(TEMP_DIR, `chunk_${timestamp}_${i}.mp3`);
+      chunkFiles.push(chunkPath);
+      
+      if (chunks.length > 1) {
+        console.log(`   📝 Chunk ${i + 1}/${chunks.length} (${chunks[i].length} chars)...`);
+      }
+      
+      const tts = new MsEdgeTTS();
+      await tts.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3);
+      
+      const { audioStream } = tts.toStream(chunks[i], { rate, pitch });
+      
+      await new Promise((resolve, reject) => {
+        const writeStream = fs.createWriteStream(chunkPath);
+        audioStream.pipe(writeStream);
+        writeStream.on('finish', resolve);
+        writeStream.on('error', reject);
+        audioStream.on('error', reject);
+        setTimeout(() => reject(new Error(`Chunk ${i + 1} timeout (120s)`)), 120000);
+      });
+      
+      tts.close();
+    }
     
-    const { audioStream } = tts.toStream(preprocessedText, { rate, pitch });
+    // Step 2: Concatenate all chunks + convert to OGG Opus
+    if (chunks.length === 1) {
+      // Single chunk: just convert to OGG
+      console.log('   🔄 Converting to OGG (WhatsApp compatible)...');
+      const cmd = `"${ffmpegPath}" -i "${chunkFiles[0]}" -c:a libopus -b:a 48k -ac 1 -ar 48000 "${oggPath}" -y`;
+      await execAsync(cmd, { timeout: 60000 });
+    } else {
+      // Multiple chunks: concat then convert
+      console.log(`   🔄 Concatenating ${chunks.length} chunks + converting to OGG...`);
+      
+      // Create concat file list for ffmpeg
+      const listPath = path.join(TEMP_DIR, `concat_${timestamp}.txt`);
+      const listContent = chunkFiles.map(f => `file '${f.replace(/\\/g, '/')}'`).join('\n');
+      fs.writeFileSync(listPath, listContent, 'utf-8');
+      
+      try {
+        const cmd = `"${ffmpegPath}" -f concat -safe 0 -i "${listPath}" -c:a libopus -b:a 48k -ac 1 -ar 48000 "${oggPath}" -y`;
+        await execAsync(cmd, { timeout: 120000 });
+      } finally {
+        try { fs.unlinkSync(listPath); } catch (e) { /* ignore */ }
+      }
+    }
     
-    await new Promise((resolve, reject) => {
-      const writeStream = fs.createWriteStream(mp3Path);
-      audioStream.pipe(writeStream);
-      writeStream.on('finish', resolve);
-      writeStream.on('error', reject);
-      audioStream.on('error', reject);
-      setTimeout(() => reject(new Error('TTS generation timeout (120s)')), 120000);
-    });
-    
-    tts.close();
-    
-    // Step 2: Convert MP3 → OGG Opus (WhatsApp voice message format)
-    console.log('   🔄 Converting MP3 → OGG (WhatsApp compatible)...');
-    const ffmpegCmd = `"${ffmpegPath}" -i "${mp3Path}" -c:a libopus -b:a 48k -ac 1 -ar 48000 "${oggPath}" -y`;
-    await execAsync(ffmpegCmd, { timeout: 60000 });
-    
-    // Step 3: Cleanup intermediate MP3
-    try { fs.unlinkSync(mp3Path); } catch (e) { /* ignore */ }
+    // Step 3: Cleanup chunk files
+    for (const f of chunkFiles) {
+      try { fs.unlinkSync(f); } catch (e) { /* ignore */ }
+    }
     
     // Verify OGG file
     const stats = fs.statSync(oggPath);
@@ -271,8 +347,10 @@ async function generateTTS(text, options = {}) {
     
   } catch (error) {
     console.error('❌ TTS generation failed:', error.message);
-    // Cleanup partial files
-    try { if (fs.existsSync(mp3Path)) fs.unlinkSync(mp3Path); } catch (e) { /* ignore */ }
+    // Cleanup all partial files
+    for (const f of chunkFiles) {
+      try { if (fs.existsSync(f)) fs.unlinkSync(f); } catch (e) { /* ignore */ }
+    }
     try { if (fs.existsSync(oggPath)) fs.unlinkSync(oggPath); } catch (e) { /* ignore */ }
     throw error;
   }
