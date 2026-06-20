@@ -134,11 +134,16 @@ console.log(`
       const mode = getVerseMode();
 
       if (mode === "bible") {
-        const bibleVerseDB = require("./services/bibleVerseDB");
-        const bibleStats = await bibleVerseDB.getStats();
         console.log(`📖 Verse mode: BIBLE`);
-        console.log(`   ${bibleStats.totalVerses} ayat dari ${bibleStats.booksInDB} kitab`);
-        console.log(`   📚 Tracking: Tidak (infinite variety)`);
+        try {
+          const bibleVerseDB = require("./services/bibleVerseDB");
+          const bibleStats = await bibleVerseDB.getStats();
+          console.log(`   ${bibleStats.totalVerses} ayat dari ${bibleStats.booksInDB} kitab`);
+          console.log(`   📚 Tracking: Tidak (infinite variety)`);
+        } catch (e) {
+          console.log(`   ⚠️ Stats belum tersedia: ${e.message}`);
+          console.log(`   📚 Tracking: Tidak (infinite variety)`);
+        }
         // Show today theme from pool system
         try {
           const todayTheme = await versePool.getTodayTheme();
