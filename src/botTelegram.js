@@ -577,7 +577,7 @@ async function handleRenunganCallback(data, chatId, messageId, userId) {
           try {
             const fs = require('fs');
             if (fs.existsSync(preview.audioPath)) {
-              await bot.sendVoice(chatId, preview.audioPath, {
+              await bot.sendVoice(chatId, fs.createReadStream(preview.audioPath), {
                 caption: '🔊 Preview Audio Renungan'
               });
               console.log('✅ Preview audio sent to Telegram');
