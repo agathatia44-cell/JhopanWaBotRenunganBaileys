@@ -1,0 +1,4 @@
+# Python dependencies for TTS (Text-to-Speech)
+# Install via: pip install -r requirements.txt
+
+edge-tts==6.1.10

@@ -170,6 +170,39 @@ Saat generate renungan:
 
 ---
 
+## 🎙️ TTS (Text-to-Speech)
+
+Bot dapat menghasilkan **audio renungan** menggunakan Microsoft Edge TTS dengan suara natural Indonesia. Member menerima **teks + voice message** di WhatsApp.
+
+### Features:
+- ✅ **Smart Preprocessing**: Kutipan ayat tidak diubah (sakral), renungan dipreprocess untuk pronunciation optimal
+- ✅ **Voice Rotation**: Otomatis berganti suara setiap hari (ganjil = wanita, genap = pria)
+- ✅ **Natural Pronunciation**: "kasih-Mu" → "kasihmu" (attached), "Yohanes 3:16" → "Yohanes pasal tiga ayat enam belas"
+- ✅ **Preview Audio**: Test audio sebelum kirim ke WhatsApp group
+
+### Voices:
+| Voice | Gender | Character | Schedule |
+|-------|--------|-----------|----------|
+| `id-ID-GadisNeural` | 🚺 Wanita | Warm, lembut | Tanggal ganjil (1, 3, 5, ...) |
+| `id-ID-ArdiNeural` | 🚹 Pria | Tegas, jelas | Tanggal genap (2, 4, 6, ...) |
+
+### Setup:
+1. Install Python package: `pip install -r requirements.txt`
+2. Set `.env`:
+   ```env
+   TTS_ENABLED=true
+   TTS_VOICE_FEMALE=id-ID-GadisNeural
+   TTS_VOICE_MALE=id-ID-ArdiNeural
+   TTS_RATE=-0%
+   TTS_PITCH=+0Hz
+   ```
+
+### Usage:
+- **Preview**: Telegram → Renungan Harian → Preview Renungan → terima text + audio
+- **Send**: Klik "Kirim Ini" → text + audio terkirim ke WhatsApp group
+
+---
+
 ## 🚀 Quick Start
 
 ### One Command to Rule Them All
