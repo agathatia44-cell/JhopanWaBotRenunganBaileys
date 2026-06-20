@@ -3,8 +3,9 @@
  * Mengelola pengiriman renungan harian dengan AI
  * AI akan generate seluruh isi renungan berdasarkan referensi ayat
  *
- * DUAL MODE:
- *   VERSE_MODE=pool   → Unified Pool (1825 ayat, AI theme, multi-ayat) [default]
+ * TRIPLE MODE:
+ *   VERSE_MODE=bible  → All Bible Verses (31,102 ayat, AI theme) [default]
+ *   VERSE_MODE=pool   → Unified Pool (1825 ayat, AI theme, multi-ayat)
  *   VERSE_MODE=yearly → Per-Year Verses (365 ayat/tahun, manual control)
  *
  * Storage: MongoDB (primary) → Local JSON file (fallback)
@@ -29,25 +30,97 @@ let renunganCronJob = null;
 let themePrecomputeJob = null;
 
 /**
- * Check verse mode: "pool" (default) or "yearly"
+ * Check verse mode: "bible" (default), "pool", or "yearly"
  */
 function getVerseMode() {
-  const mode = (process.env.VERSE_MODE || "pool").toLowerCase();
-  return mode === "yearly" ? "yearly" : "pool";
+  const mode = (process.env.VERSE_MODE || "bible").toLowerCase();
+  if (mode === "pool") return "pool";
+  if (mode === "yearly") return "yearly";
+  return "bible"; // default
 }
 
 /**
  * Get ayat untuk hari ini
- * Mode-aware: pool → unified pool | yearly → per-year verses
+ * Mode-aware: bible → all verses | pool → unified pool | yearly → per-year verses
  */
 async function getVerseForToday() {
   const mode = getVerseMode();
   console.log(`📖 Verse mode: ${mode}`);
 
+  if (mode === "pool") {
+    return getVerseForTodayPool();
+  }
   if (mode === "yearly") {
     return getVerseForTodayYearly();
   }
-  return getVerseForTodayPool();
+  return getVerseForTodayBible();
+}
+
+// ─── BIBLE MODE (All 31,102 verses) ──────────────────────────────────────────
+
+async function getVerseForTodayBible() {
+  // Get theme (from precomputed or fallback to daily themes)
+  const todayTheme = await versePool.getTodayTheme();
+  
+  let theme = "umum";
+  let specialDay = null;
+  let isSpecial = false;
+  
+  if (todayTheme) {
+    theme = todayTheme.theme || "umum";
+    if (todayTheme.isSpecial) {
+      specialDay = todayTheme.specialDayName || todayTheme.theme;
+      isSpecial = true;
+    }
+    console.log(`🎨 Theme: ${theme} (${todayTheme.reason || ""})`);
+  } else {
+    const dayOfWeek = moment().day();
+    theme = versePool.DAILY_THEMES[dayOfWeek] || "umum";
+    const sd = await checkSpecialDay();
+    if (sd) { specialDay = sd; isSpecial = true; }
+    console.log(`📅 Fallback theme: ${theme}`);
+  }
+  
+  // Try to get verses by theme from bible_verses
+  let verses = [];
+  try {
+    if (theme !== "umum") {
+      // Try theme-based selection first
+      verses = await bibleVerseDB.getRandomVersesByTheme(theme, { count: 1 });
+      if (verses.length > 0) {
+        console.log(`📖 Found ${verses.length} verse(s) for theme: ${theme}`);
+      }
+    }
+    
+    // Fallback to random if no theme match
+    if (verses.length === 0) {
+      verses = await bibleVerseDB.getRandomVerses({ count: 1 });
+      console.log(`📖 Using random verse (no theme match)`);
+    }
+  } catch (err) {
+    console.error(`⚠️ Error getting verses from bible_verses: ${err.message}`);
+    // Ultimate fallback
+    return { verseRef: "Mazmur 119:105", verseUids: [], specialDay: null, isSpecial: false, theme: "umum" };
+  }
+  
+  if (verses.length === 0) {
+    console.error(`⚠️ No verses available in bible_verses`);
+    return { verseRef: "Mazmur 119:105", verseUids: [], specialDay: null, isSpecial: false, theme: "umum" };
+  }
+  
+  const verseRefs = verses.map(v => v.ref).join("; ");
+  const verseUids = []; // Bible mode doesn't use UIDs (no tracking)
+  
+  console.log(`📖 Verse(s): ${verseRefs} (${verses.length} ayat, tema: ${theme})`);
+  
+  return {
+    verseRef: verseRefs,
+    verseUids,
+    specialDay,
+    isSpecial,
+    theme,
+    verseCount: verses.length,
+  };
 }
 
 // ─── POOL MODE ───────────────────────────────────────────────────────────────

@@ -251,6 +251,77 @@ async function getMissingChapters(allBooks) {
   return missing;
 }
 
+/**
+ * Get random verse(s) by theme/pericope from bible_verses
+ * @param {string} theme - Theme keyword (e.g., "kasih", "iman", "pengharapan")
+ * @param {Object} options - { count: 1, excludeRefs: [] }
+ * @returns {Promise<Array<{ref, text, pericope, book, chapter, verseStart, verseEnd}>>}
+ */
+async function getRandomVersesByTheme(theme, options = {}) {
+  const Model = getModel();
+  const { count = 1, excludeRefs = [] } = options;
+
+  // Build query: search in pericope (case-insensitive)
+  const query = {
+    pericope: { $regex: theme, $options: 'i' }
+  };
+
+  // Exclude already used refs
+  if (excludeRefs.length > 0) {
+    query.ref = { $nin: excludeRefs };
+  }
+
+  // Get total count for random selection
+  const totalCount = await Model.countDocuments(query);
+  if (totalCount === 0) {
+    console.log(`⚠️ No verses found for theme: ${theme}`);
+    return [];
+  }
+
+  // Random sampling using aggregation
+  const verses = await Model.aggregate([
+    { $match: query },
+    { $sample: { size: Math.min(count, totalCount) } },
+    { $project: { _id: 0, ref: 1, text: 1, pericope: 1, book: 1, chapter: 1, verseStart: 1, verseEnd: 1 } }
+  ]);
+
+  return verses;
+}
+
+/**
+ * Get random verse(s) from all bible_verses (no theme filter)
+ * @param {Object} options - { count: 1, excludeRefs: [] }
+ * @returns {Promise<Array<{ref, text, pericope, book, chapter, verseStart, verseEnd}>>}
+ */
+async function getRandomVerses(options = {}) {
+  const Model = getModel();
+  const { count = 1, excludeRefs = [] } = options;
+
+  // Build query
+  const query = {};
+
+  // Exclude already used refs
+  if (excludeRefs.length > 0) {
+    query.ref = { $nin: excludeRefs };
+  }
+
+  // Get total count for random selection
+  const totalCount = await Model.countDocuments(query);
+  if (totalCount === 0) {
+    console.log(`⚠️ No verses available in bible_verses`);
+    return [];
+  }
+
+  // Random sampling using aggregation
+  const verses = await Model.aggregate([
+    { $match: query },
+    { $sample: { size: Math.min(count, totalCount) } },
+    { $project: { _id: 0, ref: 1, text: 1, pericope: 1, book: 1, chapter: 1, verseStart: 1, verseEnd: 1 } }
+  ]);
+
+  return verses;
+}
+
 module.exports = {
   getModel,
   saveVerse,
@@ -265,4 +336,6 @@ module.exports = {
   isBookScraped,
   getStats,
   getMissingChapters,
+  getRandomVersesByTheme,
+  getRandomVerses,
 };
