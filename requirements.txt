@@ -1,4 +1,7 @@
 # Python dependencies for TTS (Text-to-Speech)
 # Install via: pip install -r requirements.txt
+# 
+# Render will auto-install this during build
+# Build command: pip install -r requirements.txt && npm install
 
 edge-tts==6.1.10
