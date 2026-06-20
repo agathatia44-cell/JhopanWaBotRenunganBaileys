@@ -405,6 +405,29 @@ async function showRenunganMenu(chatId, messageId) {
   const multiGroupStatus = config.multiGroupEnabled ? "🟢 ON" : "🔴 OFF";
   const groupCount = config.renunganGroups?.length || 0;
 
+  // Build stats display based on mode
+  let statsDisplay = "";
+  if (stats.mode === "bible") {
+    statsDisplay = `📊 Statistik Ayat:
+• Mode: Bible (Semua Alkitab)
+• Total: ${stats.total} ayat
+• Kitab: ${stats.books} kitab
+• Tracking: Tidak (infinite variety)`;
+  } else if (stats.mode === "yearly") {
+    statsDisplay = `📊 Statistik Ayat:
+• Mode: Yearly (${stats.year})
+• Total: ${stats.total} ayat
+• Sudah dipakai: ${stats.used}
+• Belum dipakai: ${stats.unused}`;
+  } else {
+    // Pool mode
+    statsDisplay = `📊 Statistik Ayat:
+• Mode: Pool (Kurasi)
+• Total: ${stats.total} ayat
+• Sudah dipakai: ${stats.used}
+• Belum dipakai: ${stats.unused}`;
+  }
+
   const message = `📖 *Menu Renungan Harian*
 
 ⏰ Jadwal: ${config.renunganTime || "08:00"} WITA
@@ -413,10 +436,7 @@ async function showRenunganMenu(chatId, messageId) {
 📢 Hide Tag: ${hideTagStatus}
 📡 Multi-Group: ${multiGroupStatus} (${groupCount} grup)
 
-📊 Statistik Ayat:
-• Total: ${stats.total} ayat
-• Sudah dipakai: ${stats.used}
-• Belum dipakai: ${stats.unused}
+${statsDisplay}
 
 Pilih aksi:`;
 

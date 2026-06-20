@@ -726,7 +726,9 @@ async function getAllVerses() {
  * Get statistik ayat (mode-aware)
  */
 async function getVersesStats() {
-  if (getVerseMode() === "yearly") {
+  const mode = getVerseMode();
+  
+  if (mode === "yearly") {
     const data = await mongoData.loadVerses();
     const total = data.verses.length;
     const used = data.verses.filter((v) => v.used).length;
@@ -737,6 +739,21 @@ async function getVersesStats() {
       specialDays: Object.keys(data.specialDayVerses || {}).length,
     };
   }
+  
+  if (mode === "bible") {
+    // Bible mode: use bible_verses collection stats
+    const bibleStats = await bibleVerseDB.getStats();
+    return {
+      mode: "bible",
+      total: bibleStats.totalVerses,
+      used: 0, // Bible mode doesn't track usage
+      unused: bibleStats.totalVerses,
+      books: bibleStats.booksInDB,
+      description: "Semua ayat Alkitab (31,102 ayat)",
+    };
+  }
+  
+  // Default: pool mode
   const stats = await versePool.getPoolStats();
   return { ...stats, mode: "pool" };
 }

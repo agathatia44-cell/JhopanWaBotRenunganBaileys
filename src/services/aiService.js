@@ -220,7 +220,12 @@ Teks ayat: "${verseData.text}"
 ${specialDay ? `\nHARI SPESIAL: ${specialDay.name} (${specialDay.date})\nIni adalah hari ${specialDay.type === 'tetap' ? 'raya/peringatan' : 'gerak'} dalam kalender gereja. SESUAIKAN renungan dengan suasana dan makna hari ini.` : ''}
 
 TUGAS
-Buat renungan yang membangun iman berdasarkan ayat dan perikop di atas.${specialDay ? ' Hubungkan dengan suasana hari spesial ini.' : ''} Kamu TIDAK perlu menulis ulang isi ayat karena sudah disediakan. Fokus pada renungan.
+Buat renungan yang membangun iman berdasarkan TEKS AYAT di atas.${specialDay ? ' Hubungkan dengan suasana hari spesial ini.' : ''} Kamu TIDAK perlu menulis ulang isi ayat karena sudah disediakan. Fokus pada renungan.
+
+PENTING: Perikop HANYA judul/konteks, BUKAN isi renungan. Fokus pada ISI TEKS AYAT, bukan judul perikop.
+Contoh:
+  ❌ SALAH: "Perikop Hari Raya Pendamaian ini mengajarkan kita..." (jelasin judul perikop)
+  ✅ BENAR: "Firman Tuhan mengatakan... [bahas isi ayat]" (jelasin isi teks ayat)
 
 ATURAN BAHASA (PENTING!)
 - Gunakan kata-kata yang MUDAH DIPAHAMI oleh mahasiswa sehari-hari.
@@ -243,8 +248,9 @@ ALUR RENUNGAN
 Firman Tuhan → Refleksi kehidupan → Respons iman → Doa
 
 Paragraf 1 — Firman Tuhan
-Jelaskan apa yang ayat ini nyatakan tentang Tuhan dengan BAHASA SEDERHANA. Ceritakan karakter Tuhan, apa yang Dia lakukan, atau apa maksud-Nya melalui ayat ini. Gunakan konteks perikop.
+Jelaskan apa yang ayat ini nyatakan tentang Tuhan dengan BAHASA SEDERHANA. Ceritakan karakter Tuhan, apa yang Dia lakukan, atau apa maksud-Nya melalui ayat ini.
 Jangan terlalu abstrak atau filosofis. Bayangkan kamu sedang menjelaskan kepada teman yang belum terlalu paham Alkitab.
+Fokus pada ISI TEKS AYAT, bukan judul perikop.
 Tuliskan 4-6 kalimat yang utuh dan mengalir.
 
 Paragraf 2 — Refleksi Kehidupan (HARUS TERKAIT PESAN AYAT)
